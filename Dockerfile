@@ -2,10 +2,27 @@
 
 FROM golang:1.16-alpine as go
 
-WORKDIR /app
-
 RUN go get github.com/OpenSLO/oslo
 
-COPY ./files/*.yaml /app
+WORKDIR /oslo
 
-CMD oslo validate /app/valid-service.yaml > oslo-output
+ARG OSLO_SPEC_PATH
+
+COPY $OSLO_SPEC_PATH ./main.yaml
+
+RUN oslo validate ./main.yaml > ./init-status
+
+FROM node:14-alpine
+
+WORKDIR /app
+
+COPY --from=go /oslo/init-status ./
+COPY --from=go /oslo/main.yaml ./
+
+COPY ["package.json", "package-lock.json*", "./"]
+
+RUN npm install
+
+COPY . .
+
+CMD [ "node", "index.js" ]
