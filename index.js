@@ -37,6 +37,69 @@ const executeExternal = async (file) => {
     })
 }
 
+const validateSchema = () => {
+    return Joi.object().keys({
+        spec: Joi.object().keys({
+            timeWindows: Joi.array().items(
+                Joi.object({
+                    unit: Joi.when('calendar', {
+                        is: Joi.exist(),
+                        then: Joi.string().valid('Year', 'Quarter', 'Month', 'Week', 'Day').required(),
+                        otherwise: Joi.string().valid('Day', 'Hour', 'Minute').required()
+                    }),
+                    count: Joi.when('unit', {
+                        is: 'Day',
+                        then: Joi.number().integer().max(28).required()
+                    }),
+                    isRolling: Joi.when('calendar', {
+                        is: Joi.exist(),
+                        then: Joi.boolean().valid(false),
+                        otherwise: Joi.boolean().valid(true).required()
+                    }),
+                    calendar: Joi.object().keys({
+                        startTime: Joi.string().required(),
+                        timeZone: Joi.string().required()
+                    })
+                })
+            ).required().length(1),
+            budgetingMethod: Joi.string().valid('Occurrences'),
+            objectives: Joi.array().items(
+                Joi.object().keys({
+                    displayName: Joi.string().required(),
+                    op: Joi.when(Joi.ref('/spec.indicator.thresholdMetric'), {
+                        is: Joi.exist(),
+                        then: Joi.string().valid('or').required(),
+                        // otherwise:
+                    }),
+                    value: Joi.number().unit('ms'), // set through the Blameless SLO API
+                    target: Joi.number().min(0).less(1).required(),
+                    timeSliceTarget: Joi.number(),
+                    // errorBudgetPolicyName: Custom Field?,
+                    ratioMetric: Joi.when(Joi.ref('/spec.indicator.thresholdMetric'), {
+                        not: Joi.exist(),
+                        then: Joi.object().keys({
+                            incremental: Joi.boolean().valid(false).required(),
+                            good: Joi.object().keys({
+                                source: Joi.string().valid(Joi.ref('...total.source')).required(),
+                                queryType: Joi.string().valid(Joi.ref('...total.queryType')).required(),
+                                query: Joi.string().valid(Joi.ref('...total.query')).required(),
+                            }).required(),
+                            total: Joi.object().keys({
+                                source: Joi.string().required(),
+                                queryType: Joi.string().required(),
+                                query: Joi.string().required()
+                            }).required()
+                        }).required(),
+                        // otherwise:
+                    })
+                })
+            ).unique((a, b) => a.value && b.value && a.value === b.value).required().min(1)
+        }).required()
+    }).options({
+        allowUnknown: true
+    })
+}
+
 (async () => {
     try {
         // const args = yargs(process.argv.slice(2)).argv
@@ -78,47 +141,11 @@ const executeExternal = async (file) => {
                 const doc = yaml.load(fs.readFileSync(YAML_FILE, 'utf8'))
                 
                 Joi.attempt(doc, Joi.object())
-                const schema = Joi.object().keys({
-                    spec: Joi.object().keys({
-                        timeWindows: Joi.array().items(
-                            Joi.object({
-                                unit: Joi.when('calendar', {
-                                    is: Joi.exist(),
-                                    then: Joi.string().valid('Year', 'Quarter', 'Month', 'Week', 'Day').required(),
-                                    otherwise: Joi.string().valid('Day', 'Minute', 'Second').required()
-                                }),
-                                count: Joi.when('unit', {
-                                    is: 'Day',
-                                    then: Joi.number().max(28).required()
-                                }),
-                                isRolling: Joi.when('calendar', {
-                                    is: Joi.exist(),
-                                    then: Joi.boolean().valid(false),
-                                    otherwise: Joi.boolean().valid(true).required()
-                                }),
-                                calendar: Joi.object().keys({
-                                    startTime: Joi.string().required(),
-                                    timeZone: Joi.string().required()
-                                })
-                            })
-                        ).required().length(1),
-                        objectives: Joi.array().items(
-                            Joi.object().keys({
-                                displayName: Joi.string().required(),
-                                op: Joi.when(Joi.link().ref('#main.spec.indicator.thresholdMetric'), {
-                                    is: Joi.exist(),
-                                    then: Joi.string().valid('or').required()
-                                })
-                            })
-                        ).required().length(1)
-                    }).required()
-                }).options({
-                    allowUnknown: true
-                }).id('main')
-
-                console.log(await schema.validateAsync(doc))
-
+                const schema = validateSchema()
+                await schema.validateAsync(doc)
+                
                 // call Blameless API to set metricUnit to ms
+                // call other API endpoints to create desired SLO
             } else {
                 throw new Error('Invalid')
             }
