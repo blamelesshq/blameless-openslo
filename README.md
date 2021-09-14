@@ -31,13 +31,13 @@ There are 8 resource types in 2 categories:
 
 
 Resources specific to the Blameless specification:
-```
+```yaml
 apiVersion: blameless/v1alpha
 kind: SLI | Service | SLO | UserJourney | ErrorBudgetPolicy
 ```
 
 (*) New resource types still under consideration for the OpenSLO specification (see [pull request #54](https://github.com/OpenSLO/OpenSLO/pull/54)):
-```
+```yaml
 apiVersion: openslo/v1alpha
 kind: AlertPolict | Service | SLO | UserJourney
 ```
@@ -57,7 +57,7 @@ kind: AlertPolict | Service | SLO | UserJourney
 * SLIs are grouped in a Blameless resource called `Service`.
 
 **Structure of a metric**
-```
+```yaml
       source: string      # data source
       queryType: string   # a name for the type of query to run on the data source
       query: string       # the query to run to return a metric
@@ -65,7 +65,7 @@ kind: AlertPolict | Service | SLO | UserJourney
 ```
 
 **Possible values**
-```
+```yaml
       source: prometheus | newrelic | datadog | pingdom
       queryType: query | metricname
       query: <actual query> | <name or path to the metric>
@@ -73,7 +73,7 @@ kind: AlertPolict | Service | SLO | UserJourney
 For `datadog` and `pingdom`, `metricname` must be selected, otherwise select `query`.
 
 For Availability type SLIs, 2 metrics must be specified:
-```
+```yaml
   ratioMetric:
     good: # the numerator
       source: string      # data source for the "good" numerator
@@ -88,7 +88,7 @@ For Availability type SLIs, 2 metrics must be specified:
 ```
 
 For other SLI types, only 1 metric must be specified
-```
+```yaml
   thresholdMetric:     # represents the metric used to inform the SLO in the objectives stanza
     source: string     # data source for the metric
     queryType: string  # a name for the type of query to run on the data source
