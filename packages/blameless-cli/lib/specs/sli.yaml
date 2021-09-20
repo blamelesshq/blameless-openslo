@@ -10,7 +10,7 @@ metadata:
 spec:
     description: string # optional - maps to user SLI definition in Blameless
 
-    sliType: latency
+    sliType: availability | latency | throughput | saturation
 
     # if sliType is Availability, then specify "ratioMetric", otherwise "thresholdMetric"
 
