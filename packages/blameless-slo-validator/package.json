@@ -1,0 +1,37 @@
+{
+  "name": "@blamelesshq/blameless-slo-validator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "lib/index.js",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/@blamelesshq"
+  },
+  "bin": {
+    "blameless": "bin/blameless.js"
+  },
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "repository": {
+    "url": "git://github.com/blamelesshq/blameless-openslo.git"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "commander": "^8.2.0"
+  },
+  "devDependencies": {
+    "lerna": "^4.0.0",
+    "joi": "^17.4.2",
+    "js-yaml": "^4.1.0"
+  },
+  "files": [
+    "bin/",
+    "lib/"
+  ]
+}
