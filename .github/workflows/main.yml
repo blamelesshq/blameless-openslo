@@ -1,7 +1,9 @@
 name: Blameless SLO Validator
 
 on:
-    push:
+  push:
+    paths:
+      - 'packages/blameless-slo-validator/**'
         branches:
             - main
 
