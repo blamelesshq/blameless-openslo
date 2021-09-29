@@ -16,8 +16,15 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@blamelesshq/blameless-slo-validator": "^1.0.1",
     "arg": "^5.0.1",
-    "inquirer": "^8.1.5"
+    "chalk": "^4.1.2",
+    "cli-spinners": "^2.6.0",
+    "dotenv": "^10.0.0",
+    "got": "^11.8.2",
+    "inquirer": "^8.1.5",
+    "listr": "^0.14.3",
+    "spinner": "^0.3.4"
   },
   "files": [
     "bin/",

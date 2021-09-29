@@ -18,9 +18,8 @@ const sliSchema = Joi.object().keys({
             sliType: Joi.string()
                 .valid('availability', 'latency', 'throughput', 'saturation')
                 .required(),
-            ratioMetric: Joi.alternatives().conditional('sliType', {
-                is: 'availability',
-                then: Joi.object().keys({
+            ratioMetric: Joi.object()
+                .keys({
                     good: Joi.object().keys({
                         source: Joi.string().required(),
                         queryType: Joi.string().required(),
@@ -33,17 +32,16 @@ const sliSchema = Joi.object().keys({
                         query: Joi.string().required(),
                         metadata: Joi.optional(),
                     }),
-                }),
-            }),
-            thresholdMetric: Joi.alternatives().conditional('sliType', {
-                not: 'availability',
-                then: Joi.object().keys({
+                })
+                .when('sliType', { is: 'availability', then: Joi.required() }),
+            thresholdMetric: Joi.object()
+                .keys({
                     source: Joi.string().required(),
                     queryType: Joi.string().required(),
                     query: Joi.string().required(),
                     metadata: Joi.optional(),
-                }),
-            }),
+                })
+                .when('sliType', { not: 'availability', then: Joi.required() }),
         })
         .required()
         .options({
