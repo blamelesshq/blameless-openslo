@@ -1,6 +1,6 @@
 const arg = require('arg')
 
-const parseArgsIntoOpt = (arguments) => {
+const parseArgsIntoOpt =  (arguments) => {
     const args = arg({
         "--skip": Boolean,
         "--filePath": String,
@@ -11,9 +11,14 @@ const parseArgsIntoOpt = (arguments) => {
         argv: arguments.slice(2),
     });
 
+    const missingPathArgument = new Error('Missing required argument: -f')
+
+    if (!args['--filePath'])  throw  missingPathArgument.message
+
+
     return {
         hidePrompts: args["--skip"] || false,
-        filePath: args._[0]
+        filePath: args["--filePath"] 
     }
 }
 
