@@ -1,7 +1,7 @@
 const envConfig = require('../lib/config/env')
 const apiCallHandler = require('./shared/apiCall')
 
-const getAllSliTypes = async (method) => {
+const getAllSliTypes = async () => {
     try {
         const result = await apiCallHandler.post(
             `${envConfig.blamelessTenantBaseUrl}/GetSliTypes`

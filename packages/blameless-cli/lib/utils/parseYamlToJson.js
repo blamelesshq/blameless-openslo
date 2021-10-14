@@ -8,7 +8,6 @@ const parseYamlToJson = (filePath) => {
     }
     try {
         const doc = yaml.load(fs.readFileSync(filePath, 'utf8'))
-
         return JSON.parse(JSON.stringify(doc))
     } catch (e) {
         console.log(e)

@@ -1,6 +1,6 @@
 const inquirer = require('inquirer')
-// const validate = require('@blamelesshq/blameless-slo-validator')
-const validate = require('../../../blameless-slo-validator/lib/')
+const validate = require('@blamelesshq/blameless-slo-validator')
+// const validate = require('../../../blameless-slo-validator/lib/')
 
 const suggestOptions = async (options) => {
     const blamelessInitialQuestion = []
