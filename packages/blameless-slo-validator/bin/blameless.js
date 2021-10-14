@@ -7,19 +7,21 @@ const help = require('../lib/utils/help')
 
 program
     .version(packageVersion)
-    .command('validate')
+    .command('validate', { isDefault: true })
     .requiredOption(
         '-f, --filePath <filePath>',
         'path to the source file for validating'
     )
     .action((options) => {
-        const targetFile = options.targetObj
-            ? JSON.parse(options.targetObj)
-            : options.filePath
-        validate(targetFile)
+        validate(options.filePath)
     })
 
-if (process.argv.includes('help')) {
+if (
+    process.argv.includes('-help') ||
+    process.argv.includes('help') ||
+    process.argv.includes('-h') ||
+    process.argv.includes('--help')
+) {
     help()
 }
 
