@@ -12,7 +12,7 @@ const documentTypeChecker = (type, document) => {
     const yamlSpecifications = {
         sli: validationResult(document, sliSchema),
         slo: validationResult(document, sloSchema),
-        userjurney: validationResult(document, userJorneySchema),
+        userjourney: validationResult(document, userJorneySchema),
         service: validationResult(document, serviceSchema),
         errorbudgetpolicy: validationResult(document, errorBudgetPolicySchema),
         alertpolicy: validationResult(document, alertPolicySchema),

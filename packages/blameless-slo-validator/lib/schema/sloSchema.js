@@ -15,6 +15,7 @@ const sloSchema = Joi.object().keys({
     spec: Joi.object()
         .keys({
             description: Joi.string(),
+            owner: Joi.string().required(),
             sloStatus: Joi.string()
                 .valid('development', 'testing', 'active')
                 .required(),

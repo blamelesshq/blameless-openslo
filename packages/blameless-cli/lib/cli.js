@@ -5,7 +5,7 @@ const createResources = require('./main')
 const cli = async (args) => {
     let options = parseArgsIntoOpt(args)
     options = await suggestOptions(options)
-    //await createResources(options)
+    await createResources(options)
 }
 
 module.exports = cli

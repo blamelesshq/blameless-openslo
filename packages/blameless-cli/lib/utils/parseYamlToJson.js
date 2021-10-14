@@ -1,5 +1,6 @@
 const yaml = require('js-yaml')
 const fs = require('fs')
+const path = require('path')
 
 const parseYamlToJson = (filePath) => {
     if (!filePath || !filePath.includes('.yaml')) {
