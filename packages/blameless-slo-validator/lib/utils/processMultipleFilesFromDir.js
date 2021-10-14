@@ -1,6 +1,7 @@
 const path = require('path')
 const fs = require('fs')
 const logger = require('./logger')
+const isItYaml = require('./isItYaml')
 
 const validatePath = (path) => {
     return fs.existsSync(path)
@@ -29,7 +30,7 @@ const processMultipleDocumentsFromDirectory = (filePath) => {
             const fileNameWithExtension = `${fName}${fileExtension}`
             const fullPath = `${filePath}/${fileNameWithExtension}`
 
-            if (fileExtension.includes('yaml')) {
+            if (isItYaml(filename)) {
                 yamlDocuments.push({
                     fileNameWithExtension,
                     filePath,

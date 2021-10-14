@@ -15,6 +15,7 @@ const serviceSchema = Joi.object().keys({
         .keys({
             description: Joi.string().required(),
             notes: Joi.string().optional(),
+            owner: Joi.string().required(),
         })
         .required()
         .options({

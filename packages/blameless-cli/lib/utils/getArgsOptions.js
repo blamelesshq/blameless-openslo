@@ -5,20 +5,21 @@ const parseArgsIntoOpt =  (arguments) => {
         "--skip": Boolean,
         "--filePath": String,
         "-s": "--skip",
-        "-f": "--filePath"
+        "-f": "--filePath",
     },
     {
         argv: arguments.slice(2),
     });
 
-    const missingPathArgument = new Error('Missing required argument: -f')
 
-    if (!args['--filePath'])  throw  missingPathArgument.message
-
+    if (!args['--filePath'] || !(arguments.slice(2).length > 1)) {
+        console.log('Error: Missing required argument: -f <file_path>')
+        return
+    }  
 
     return {
         hidePrompts: args["--skip"] || false,
-        filePath: args["--filePath"] 
+        filePath: args["--filePath"],
     }
 }
 

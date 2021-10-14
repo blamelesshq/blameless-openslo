@@ -2,9 +2,11 @@ const yaml = require('js-yaml')
 const { logger, showErrors } = require('./')
 const fs = require('fs')
 const documentTypeChecker = require('./documentTypeChecker')
+const _ = require('lodash')
 
 const validateMultiple = (files) => {
     let processedDocument,
+        allValidDocs = [],
         hasErrors = false
 
     if (!(files && files.length) && typeof files !== 'boolean') {
@@ -44,11 +46,13 @@ const validateMultiple = (files) => {
                     documentType?.error?.details,
                     processedDocument?.kind
                 )
+                allValidDocs.push(documentType?.value)
             }
         })
 
         return {
             isValid: hasErrors ? false : true,
+            validDocuments: _.groupBy(allValidDocs, 'kind'),
         }
     }
 }

@@ -1,6 +1,6 @@
 const inquirer = require('inquirer')
-const validate = require('@blamelesshq/blameless-slo-validator')
-const processFlow = require('./processFlow')
+// const validate = require('@blamelesshq/blameless-slo-validator')
+const validate = require('../../../blameless-slo-validator/lib/')
 
 const suggestOptions = async (options) => {
     const blamelessInitialQuestion = []
@@ -12,12 +12,13 @@ const suggestOptions = async (options) => {
         })
     }
 
-    const answer = await inquirer.prompt(blamelessInitialQuestion)
-    const result = validate(answer?.filePath || options?.filePath)
-
+    //const answer = await inquirer.prompt(blamelessInitialQuestion)
+    const result = validate(options?.filePath)
     return {
         ...options,
         filePath: options.filePath || answer?.filePath,
+        isValid: result?.isValid,
+        validDocuments: result?.validDocuments,
     }
 }
 
