@@ -17,6 +17,7 @@ jobs:
                   node-version: 14
                   registry-url: https://npm.pkg.github.com/
                   scope: '@blamelesshq'
+                  always-auth: true
             - run: npm install
             - run: npm publish
               env:
