@@ -12,8 +12,6 @@ spec:
 
     sliType: availability
 
-    owner: kristijan@blameless.com
-
     # if sliType is Availability, then specify "ratioMetric", otherwise "thresholdMetric"
 
     ratioMetric:
