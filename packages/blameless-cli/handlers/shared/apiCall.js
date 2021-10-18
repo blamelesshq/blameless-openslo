@@ -1,6 +1,7 @@
 const axios = require('axios').default
 const envConfig = require('../../lib/config/env')
 const getAuthToken = require('./getToken')
+const logger = require('../../lib/utils/logger')
 
 const apiCallHandler = axios.create({
     baseURL: envConfig.blamelessTenantBaseUrl,
@@ -13,21 +14,29 @@ apiCallHandler.interceptors.request.use((req) => {
     return req
 })
 
-// apiCallHandler.interceptors.response.use(
-//     (response) => {
-//         if (response.status === 401) {
-//             console.log('Please login.. unauthorized')
-//         }
-//     },
-//     (error) => {
-//         if (error.response.status === 404) {
-//             throw new Error(`${err.error.url} not found`)
-//         }
-//         if (error.response.status === 401) {
-//             throw new Error(`Unauthorized!`)
-//         }
-//         throw error
-//     }
-// )
+apiCallHandler.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        const responseStatusCode = error.response ? error.response.status : null
+        let failedRequest = error.config
+
+        if (responseStatusCode && responseStatusCode === 401) {
+            logger.info('Unauthorized!. Trying to get new auth token')
+
+            //TODO: Once API for getting token is ready, we should change getAuthToken() method
+            // If there is API for Refresh token, probably we should invoke that API aswell
+
+            apiCallHandler.defaults.headers[
+                'authorization'
+            ] = `Bearer ${getAuthToken()}`
+
+            failedRequest.headers['authorization'] = `Bearer ${getAuthToken()}`
+
+            return axios.request(failedRequest)
+        } else {
+            Promise.reject(error)
+        }
+    }
+)
 
 module.exports = apiCallHandler

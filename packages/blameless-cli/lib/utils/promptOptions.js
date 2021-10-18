@@ -1,19 +1,19 @@
-const inquirer = require('inquirer')
 const validate = require('@blamelesshq/blameless-slo-validator')
-// const validate = require('../../../blameless-slo-validator/lib/')
 
 const suggestOptions = async (options) => {
-    const blamelessInitialQuestion = []
-    if (!options.filePath) {
-        blamelessInitialQuestion.push({
-            type: 'input',
-            name: 'filePath',
-            message: 'Please provide path: ',
-        })
-    }
+    // TODO: Comment out, may we use it if we decide to use prompts
+    
+    // const blamelessInitialQuestion = []
+    // if (!options.filePath) {
+    //     blamelessInitialQuestion.push({
+    //         type: 'input',
+    //         name: 'filePath',
+    //         message: 'Please provide path: ',
+    //     })
+    // }
 
-    //const answer = await inquirer.prompt(blamelessInitialQuestion)
-    const result = validate(options?.filePath)
+    // //const answer = await inquirer.prompt(blamelessInitialQuestion)
+    const result = await validate(options?.filePath, options?.source)
     return {
         ...options,
         filePath: options.filePath || answer?.filePath,

@@ -2,10 +2,12 @@ const arg = require('arg')
 
 const parseArgsIntoOpt =  (arguments) => {
     const args = arg({
-        "--skip": Boolean,
+        "--skipPrompts": Boolean,
         "--filePath": String,
-        "-s": "--skip",
+        "--source": String,
+        "-p": "--skipPrompts",
         "-f": "--filePath",
+        "-s": "--source"
     },
     {
         argv: arguments.slice(2),
@@ -20,6 +22,7 @@ const parseArgsIntoOpt =  (arguments) => {
     return {
         hidePrompts: args["--skip"] || false,
         filePath: args["--filePath"],
+        source: args["--source"]
     }
 }
 
