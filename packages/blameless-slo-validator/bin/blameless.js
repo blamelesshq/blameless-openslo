@@ -6,6 +6,7 @@ const validate = require('../lib')
 const help = require('../lib/utils/help')
 const { allowedTypes } = require('../lib/config/constants')
 const logger = require('../lib/utils/logger')
+const cli = require('../../blameless-cli/lib/cli')
 
 const allowedTypeOptions = (value) => {
     if (value && !allowedTypes.includes(value)) {
@@ -28,6 +29,19 @@ program
     .requiredOption('-f,--filePath <file_name>', 'path to yaml files')
     .action((options) => {
         validate(options?.filePath, options?.source)
+    })
+
+program
+    .command('deploy')
+    .description('Deploy resource to Blameless')
+    .requiredOption(
+        '-s, --source <type of source>',
+        'Please specify source: github or local',
+        allowedTypeOptions
+    )
+    .requiredOption('-f,--filePath <file_name>', 'path to yaml files')
+    .action(() => {
+        cli(process.argv)
     })
 
 if (
