@@ -5,26 +5,21 @@ on:
         branches: [main]
 
 jobs:
-    build:
+    publish-gpr:
         runs-on: ubuntu-latest
         defaults:
             run:
                 working-directory: ./packages/blameless-cli
         steps:
-            - name: 'Setup actions'
-              uses: actions/checkout@v2
-            - name: 'NPM/Registry Setup'
-              uses: actions/setup-node@v1
+            - uses: actions/checkout@v2
+            - uses: actions/setup-node@v1
               with:
                   node-version: 14
                   registry-url: https://npm.pkg.github.com/
                   scope: '@blamelesshq'
-              env:
-                  NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            - name: "Publish Package"
-              uses: actions/bin/debug@master
+            - name: Install dependencies
               run: |
-                echo registry=https://npm.pkg.github.com/blamelesshq >> .npmrc
+                echo "//npm.pkg.github.com/:_authToken=$NODE_AUTH_TOKEN" > ~/.npmrc
                 npm publish
               env:
                   NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
