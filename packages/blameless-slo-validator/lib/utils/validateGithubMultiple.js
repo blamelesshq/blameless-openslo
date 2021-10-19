@@ -6,9 +6,9 @@ const _ = require('lodash')
 const getContentFromGithubRepo = require('./getContentFromGithubRepository')
 const isItYaml = require('./isItYaml')
 
-const validateGithubMultiple = (files) => {
-    let allValidDocs = [],
-        hasErrors = false
+const validateGithubMultiple = async (files) => {
+    let allValidDocs = []
+    let hasErrors = false
 
     if (!files && typeof files !== 'boolean') {
         logger.error(
@@ -49,8 +49,8 @@ const validateGithubMultiple = (files) => {
         }
     }
 
-    if (files && files.length) {
-        files.forEach(async (file) => {
+    if (files && files.length > 1) {
+        for await (let file of files) {
             if (isItYaml(file?.path)) {
                 const document = await getContentFromGithubRepo(file?.path)
                 const processedDocument = yaml.load(
@@ -83,15 +83,15 @@ const validateGithubMultiple = (files) => {
                     allValidDocs.push(documentType?.value)
                 }
             }
-        })
-    }
+        }
 
-    return {
-        isValid: hasErrors ? false : true,
-        validDocuments:
-            allValidDocs && allValidDocs?.length
-                ? _.groupBy(allValidDocs, 'kind')
-                : null,
+        return {
+            isValid: !hasErrors,
+            validDocuments:
+                allValidDocs && allValidDocs?.length
+                    ? _.groupBy(allValidDocs, 'kind')
+                    : null,
+        }
     }
 }
 

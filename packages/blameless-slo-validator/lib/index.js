@@ -6,7 +6,7 @@ const validateGithubMultiple = require('./utils/validateGithubMultiple')
 const validate = async (filePath, source) => {
     if (source && source === 'github') {
         const remoteFiles = await getContentFromGithubRepo(filePath)
-        return validateGithubMultiple(remoteFiles)
+        return await validateGithubMultiple(remoteFiles)
     }
 
     if (source && source === 'local') {
