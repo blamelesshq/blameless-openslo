@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "lib/cli.js",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/@blamelesshq"
+  },
   "bin": {
     "blameless-slo": "bin/blameless-cli.js"
   },
@@ -14,6 +17,9 @@
   },
   "keywords": [],
   "author": "",
+  "repository": {
+    "url": "git://github.com/blamelesshq/blameless-openslo.git"
+  },
   "license": "ISC",
   "dependencies": {
     "@blamelesshq/blameless-slo-validator": "^1.0.4",
