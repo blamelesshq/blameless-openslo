@@ -1,11 +1,10 @@
 const envConfig = require('../lib/config/env')
-const apiCall = require('../lib/utils/userAuth')
+const apiCallHandler = require('./shared/apiCall')
 
 const getAllSLIs = async (method) => {
     try {
-        const result = await apiCall(
-            `${envConfig.blamelessTenantBaseUrl}/GetSLIs`,
-            method
+        const result = await apiCallHandler.post(
+            `${envConfig.blamelessTenantBaseUrl}/GetSLIs`
         )
 
         const { statusCode, body } = result

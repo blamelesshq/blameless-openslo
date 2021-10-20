@@ -1,5 +1,5 @@
 const envConfig = require('../lib/config/env')
-const got = require('got')
+const apiCallHandler = require('./shared/apiCall')
 
 const login = async () => {
     const authRequest = {
@@ -10,17 +10,16 @@ const login = async () => {
     }
 
     try {
-        const result = await got.post(envConfig.loginBase, {
-            json: authRequest,
-        })
+        const result = await apiCallHandler.post(
+            envConfig.loginBase,
+            authRequest
+        )
 
         const { statusCode, body } = result
 
-        const token = `${JSON.parse(body)?.token_type} ${
+        return `${JSON.parse(body)?.token_type} ${
             JSON.parse(body)?.access_token
         }`
-
-        return token
     } catch (error) {
         console.error(`Unable to login. Error: ${error}`)
     }

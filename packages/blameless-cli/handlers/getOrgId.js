@@ -1,9 +1,9 @@
 const envConfig = require('../lib/config/env')
-const apiCall = require('../lib/utils/userAuth')
+const apiCallHandler = require('./shared/apiCall')
 
 const getOrgId = async () => {
     try {
-        const result = await apiCall(envConfig.getOrgIdBase)
+        const result = await apiCallHandler.post(envConfig.getOrgIdBase)
 
         const { statusCode, body } = result
 

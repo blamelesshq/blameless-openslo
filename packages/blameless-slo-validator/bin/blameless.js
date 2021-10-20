@@ -6,7 +6,7 @@ const validate = require('../lib')
 const help = require('../lib/utils/help')
 const { allowedTypes } = require('../lib/config/constants')
 const logger = require('../lib/utils/logger')
-const cli = require('../../blameless-cli/lib/cli')
+const cli = require('@blamelesshq/blameless-slo-deploy')
 
 const allowedTypeOptions = (value) => {
     if (value && !allowedTypes.includes(value)) {

@@ -1,9 +1,9 @@
 const envConfig = require('../lib/config/env')
-const apiCall = require('../lib/utils/userAuth')
+const apiCallHandler = require('./shared/apiCall')
 
 const getUserId = async (owner) => {
     try {
-        const result = await apiCall(`${envConfig.userIdBase}/${owner}`)
+        const result = await apiCallHandler(`${envConfig.userIdBase}/${owner}`)
 
         const { statusCode, body } = result
 
