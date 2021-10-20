@@ -1,13 +1,13 @@
 {
   "name": "@blamelesshq/blameless-slo-deploy",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "lib/cli.js",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/@blamelesshq"
   },
   "bin": {
-    "blameless-slo": "bin/blameless-cli.js"
+    "blameless-slo-deploy": "bin/blameless-cli.js"
   },
   "directories": {
     "lib": "lib"
