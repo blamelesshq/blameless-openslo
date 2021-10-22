@@ -1,20 +1,23 @@
-const path = require('path')
+const getBlamelessConfig = require('../utils/getBlamelessConfig')
 
-require('dotenv').config({ path: path.join(__dirname, '../../.env') })
+const config = getBlamelessConfig()
 
 /**
  * @description Environment configuration
  */
 const envConfig = {
+    pat: config.REPOSITORY_PAT,
+    owner: config.REPOSITORY_OWNER,
+    repo: config.REPOSITORY_NAME,
     loginBase: process.env.BLAMELESS_OAUTH_BASE,
     clientId: process.env.BLAMELESS_OAUTH_CLIENT_ID,
     clientSecret: process.env.BLAMELESS_OAUTH_CLIENT_SECRET,
     audience: process.env.BLAMELESS_OAUTH_AUDIENCE,
     grandType: process.env.BLAMELESS_OAUTH_GRAND_TYPE,
-    getOrgIdBase: process.env.BLAMELESS_ORG_ID_BASE,
-    userIdBase: process.env.BLAMELESS_USER_ID_BASE,
-    tempAuthToken: process.env.BLAMELESS_TEMP_AUTH_TOKEN,
-    blamelessTenantBaseUrl: process.env.BLAMELESS_TENANT_BASE_URL,
+    getOrgIdBase: `${config.BLAMELESS_TENANT_BASE_URL}/identity/tenant`,
+    userIdBase: `${config.BLAMELESS_TENANT_BASE_URL}/identity/user/authName/`,
+    tempAuthToken: config.BLAMELESS_TEMP_AUTH_TOKEN,
+    blamelessTenantBaseUrl: `${config.BLAMELESS_TENANT_BASE_URL}/services/SLOServiceCrud/`,
 }
 
 module.exports = envConfig

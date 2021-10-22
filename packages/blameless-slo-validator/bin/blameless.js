@@ -7,6 +7,9 @@ const help = require('../lib/utils/help')
 const { allowedTypes } = require('../lib/config/constants')
 const logger = require('../lib/utils/logger')
 const cli = require('@blamelesshq/blameless-slo-deploy')
+const setConfig = require('../lib/utils/setConfiguration')
+const isConfigSet = require('../lib/utils/checkConfig')
+const os = require('os')
 
 const allowedTypeOptions = (value) => {
     if (value && !allowedTypes.includes(value)) {
@@ -17,40 +20,49 @@ const allowedTypeOptions = (value) => {
     return value
 }
 
-program
-    .version(packageVersion)
-    .command('validate')
-    .description('Validate YAML files')
-    .requiredOption(
-        '-s, --source <type of source>',
-        'Please specify source: github or local',
-        allowedTypeOptions
-    )
-    .requiredOption('-f,--filePath <file_name>', 'path to yaml files')
-    .action((options) => {
-        validate(options?.filePath, options?.source)
-    })
+if (isConfigSet()) {
+    program
+        .version(packageVersion)
+        .command('validate')
+        .description('Validate YAML files')
+        .requiredOption(
+            '-s, --source <type of source>',
+            'Please specify source: github or local',
+            allowedTypeOptions
+        )
+        .requiredOption('-f,--filePath <file_name>', 'path to yaml files')
+        .action((options) => {
+            validate(options?.filePath, options?.source)
+        })
 
-program
-    .command('deploy')
-    .description('Deploy resource to Blameless')
-    .requiredOption(
-        '-s, --source <type of source>',
-        'Please specify source: github or local',
-        allowedTypeOptions
-    )
-    .requiredOption('-f,--filePath <file_name>', 'path to yaml files')
-    .action(() => {
-        cli(process.argv)
-    })
+    program
+        .command('deploy')
+        .description('Deploy resource to Blameless')
+        .requiredOption(
+            '-s, --source <type of source>',
+            'Please specify source: github or local',
+            allowedTypeOptions
+        )
+        .requiredOption('-f,--filePath <file_name>', 'path to yaml files')
+        .action(() => {
+            cli(process.argv)
+        })
 
-if (
-    process.argv.includes('-help') ||
-    process.argv.includes('help') ||
-    process.argv.includes('-h') ||
-    process.argv.includes('--help')
-) {
-    program.addHelpText('beforeAll', help())
+    if (
+        process.argv.includes('-help') ||
+        process.argv.includes('help') ||
+        process.argv.includes('-h') ||
+        process.argv.includes('--help')
+    ) {
+        program.addHelpText('beforeAll', help())
+    }
+
+    program.parse(process.argv)
+} else {
+    logger.error(
+        `Config is missing. Please set correct config values. 
+         If you enter an incorrect configuration value by mistake you can change
+         it to the following location ${os.homedir()}`
+    )
+    setConfig()
 }
-
-program.parse(process.argv)
