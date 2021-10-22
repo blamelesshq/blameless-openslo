@@ -2,7 +2,7 @@ const validate = require('@blamelesshq/blameless-slo-validator')
 
 const suggestOptions = async (options) => {
     // TODO: Comment out, may we use it if we decide to use prompts
-    
+
     // const blamelessInitialQuestion = []
     // if (!options.filePath) {
     //     blamelessInitialQuestion.push({
