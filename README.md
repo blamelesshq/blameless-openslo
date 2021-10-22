@@ -133,4 +133,61 @@ The SLO status is a required SLO setting which indicates if the attached Error B
 
 The `Owner` is currently a required parameter. Does the Blameless SLO API require an owner ID or a full name?
 
+### Blameless SLO Package
 
+Under `blamelesshq` organization there are currently two private npm packages.
+
+* `blameless-slo-validator` - can be used standalone to validate yaml specifications, or used as an npm package.
+
+* `blameless-slo-deploy` - is used for deploy yaml files in blameless instance. In the background in this package is used `blameless-slo-validator` in order to validate yaml files before procceed with deploy resources.
+
+* blameless-slo package currently supports two `commands`:
+  1. validate
+  2. deploy
+
+## How to find Blameless SLO Packages?
+
+Blameless SLO Packages are private packages and they are deployed at `GPR` (Github Package Repository)
+
+* Go to Github Blameless `https://github.com/orgs/blamelesshq` and navigate to `Packages` tab.
+
+![Blameless Org Packages](https://i.postimg.cc/QdL7VPVx/packages-org-tab.png)
+
+* Go to `https://github.com/blamelesshq/blameless-openslo` and on the right side you will be able to find packages
+
+![Blameless Org Packages](https://i.postimg.cc/8zp7FrLs/packages-org-tab-2.png)
+
+
+## How to use it?
+
+First you have to install `blameless-slo-validator` globally like following example `npm install @blamelesshq/blameless-slo-validator@1.0.12 -g`
+Please always use latest version of packages, because it includes more bug fixes and other improvements/features.
+
+When you try to install first time it will throw error (404 Package Not Found)
+
+In order to be able to install you need to set your `PAT` (Personal Access Token).
+
+Navigate to `https://github.com/settings/tokens` and click on `Personal Access Token` at left side
+
+Then click on `Generate New Token` and fill information like at the image bellow
+
+![Token Generation](https://i.postimg.cc/m2DDBG4F/token-set.png)
+
+At the end click `Generate Token` button.
+
+Once you have installed `blameless-slo-validator` package, open Git Bash and type `blameless-slo`
+
+![Token Generation](https://i.postimg.cc/c4mb7VtT/blameless-slo-inst.png)
+
+First you have to set config.
+
+* Acceptable config values:
+  1. BLAMELESS_TENANT_BASE_URL: `https://your_instance_name.blameless.io/api/v1/`
+  2. BLAMELESS_TEMP_AUTH_TOKEN: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c` without `Bearer`
+  3. REPOSITORY_PAT: `Use Personal Acccess Token that you have created before`
+  4. REPOSITORY_OWNER: `Find your repository owner. In our case it's blamelesshq`
+  5. REPOSITORY_NAME: `Find your repository name. In our case it's blameless-openslo`
+
+
+Once you have set this config you should run again the same command `blameless-slo`
+Depending of what you want to do possible options are: `blameless-slo validate` and `blameless-slo deploy`
