@@ -2,7 +2,7 @@ apiVersion: blameless/v1alpha
 kind: UserJourney
 
 metadata:
-    name: Demo 10/06/21 # unique name of the User Journey
+    name: Demo 22/10/21 # unique name of the User Journey
     displayName: My demo test after improvements (Kristijan) # optional
 
 spec:
