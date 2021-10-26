@@ -10,7 +10,7 @@ const hasMinimumRequirements = (docs) => {
 }
 
 const createResources = async (options) => {
-    if (options && !options.isValid && _.size(options?.validDocuments) == 1) {
+    if (options && !options.isValid) {
         logger.warn('YAML file is not valid. Please update and try again')
         return
     }
@@ -31,22 +31,18 @@ const createResources = async (options) => {
     }
 
     if (
-        options &&
-        !options.isValid &&
-        options?.validDocuments &&
-        _.size(options?.validDocuments) > 1
+        (options &&
+            options.isValid &&
+            options?.validDocuments &&
+            _.size(options?.validDocuments) > 1 &&
+            hasMinimumRequirements(options && options?.validDocuments)) ||
+        (options &&
+            !options.isValid &&
+            options?.validDocuments &&
+            _.size(options?.validDocuments) > 1 &&
+            hasMinimumRequirements(options && options?.validDocuments))
     ) {
-        const hasMinRequirements = hasMinimumRequirements(
-            options && options?.validDocuments
-        )
-
-        if (hasMinRequirements) {
-            waterfallSloCreateHandler(options && options?.validDocuments)
-        } else {
-            logger.warn(
-                `The minimum requirements were not met, make sure you have the following types of documents: ${listOfMinimalRequiredDocuments}`
-            )
-        }
+        waterfallSloCreateHandler(options && options?.validDocuments)
     }
 }
 

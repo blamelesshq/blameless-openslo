@@ -34,7 +34,7 @@ apiCallHandler.interceptors.response.use(
 
             return axios.request(failedRequest)
         } else {
-            Promise.reject(error)
+            logger.error(`${error?.message}`)
         }
     }
 )
