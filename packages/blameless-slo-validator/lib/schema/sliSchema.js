@@ -15,7 +15,7 @@ const sliSchema = Joi.object().keys({
     spec: Joi.object()
         .keys({
             description: Joi.string(),
-            owner: Joi.string().optional(),
+            owner: Joi.string().required(),
             sliType: Joi.string()
                 .valid('availability', 'latency', 'throughput', 'saturation')
                 .required(),

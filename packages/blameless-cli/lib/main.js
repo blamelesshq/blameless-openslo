@@ -1,5 +1,4 @@
 const logger = require('./utils/logger')
-const parseYamlToJson = require('./utils/parseYamlToJson')
 const documentProcesorByType = require('./utils/documentProcessorByType')
 const _ = require('lodash')
 const { listOfMinimalRequiredDocuments } = require('../lib/config/constants')
@@ -10,7 +9,7 @@ const hasMinimumRequirements = (docs) => {
 }
 
 const createResources = async (options) => {
-    if (options && !options.isValid) {
+    if (options && !options.isValid && !options?.validDocuments) {
         logger.warn('YAML file is not valid. Please update and try again')
         return
     }
@@ -21,9 +20,8 @@ const createResources = async (options) => {
         options.filePath &&
         _.size(options?.validDocuments) <= 1
     ) {
-        const document = parseYamlToJson(options.filePath)
+        const document = options?.validDocuments?.[0]
         const documentType = document && document.kind
-
         documentProcesorByType(
             documentType && documentType.toLowerCase(),
             document
