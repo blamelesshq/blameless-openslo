@@ -93,6 +93,7 @@ const userId = async (document) => {
 }
 
 const createSli = async (document, inputResult) => {
+    const documentType = document?.spec?.sliType.toLowerCase()
     const createSliReq = {
         orgId:
             inputResult && inputResult?.orgId
@@ -104,18 +105,25 @@ const createSli = async (document, inputResult) => {
             dataSourceId: await dataSourceId(document),
             sliTypeId: await sliTypeId(document),
             serviceId: await serviceId(document),
-            metricPath: JSON.stringify({
-                availability: {
-                    good: document?.spec?.ratioMetric?.good?.query,
-                    valid: document?.spec?.ratioMetric?.total?.query,
-                },
-            }),
+            metricPath:
+                documentType && documentType === 'availability'
+                    ? JSON.stringify({
+                          availability: {
+                              good: document?.spec?.ratioMetric?.good?.query,
+                              valid: document?.spec?.ratioMetric?.total?.query,
+                          },
+                      })
+                    : JSON.stringify({
+                          [documentType]:
+                              document?.spec?.thresholdMetric?.query,
+                      }),
             userId:
                 inputResult && inputResult?.createdByUserId
                     ? inputResult?.createdByUserId
                     : await userId(document),
         },
     }
+
     const slis = await getAllSLIs()
     const matchingSliId =
         slis &&

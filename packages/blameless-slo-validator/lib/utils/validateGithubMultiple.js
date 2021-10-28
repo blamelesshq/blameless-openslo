@@ -18,7 +18,7 @@ const validateGithubMultiple = async (files) => {
         return false
     }
 
-    if (files && files.length === 1) {
+    if (files && !files.length) {
         if (isItYaml(files?.path)) {
             const processedDocument = yaml.load(
                 Buffer.from(files?.content, 'base64').toString('utf-8')
@@ -46,6 +46,11 @@ const validateGithubMultiple = async (files) => {
                 )
                 allValidDocs.push(documentType?.value)
             }
+        }
+
+        return {
+            isValid: !hasErrors,
+            validDocuments: allValidDocs,
         }
     }
 

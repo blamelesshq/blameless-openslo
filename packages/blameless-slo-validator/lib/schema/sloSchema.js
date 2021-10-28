@@ -33,7 +33,7 @@ const sloSchema = Joi.object().keys({
                 is: Joi.exist().equal('thresholdMetric'),
                 then: Joi.string().valid('ms', 's').required(),
             }),
-            errorBudgetPolicyName: Joi.string().required(),
+            errorBudgetPolicyName: Joi.string().optional(),
         })
         .required()
         .options({

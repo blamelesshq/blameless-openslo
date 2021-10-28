@@ -6,7 +6,6 @@ const getOrgId = require('../../../../handlers/shared/getOrgId')
 const getUserId = require('../../../../handlers/shared/getUserId')
 const getServicesHandlers = require('../../../../handlers/service/getServicesHandler')
 const updateServiceHandlers = require('../../../../handlers/service/updateServiceHandler')
-const userJourneyProcesor = require('../userJourney/userJourneyProcessor')
 
 const orgId = async () => {
     const result = await getOrgId()

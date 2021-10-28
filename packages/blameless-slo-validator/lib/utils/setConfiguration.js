@@ -71,14 +71,13 @@ const createConfigFile = async (path) => {
     requiredConfiguration.push(
         {
             type: 'input',
-            name: 'BLAMELESS_TENANT_BASE_URL',
-            message: 'Please set BLAMELESS_TENANT_BASE_URL: ',
-            validate: (BLAMELESS_TENANT_BASE_URL) => {
+            name: 'BLAMELESS_TENANT_DOMAIN',
+            message: 'Please set BLAMELESS_TENANT_DOMAIN:',
+            validate: (BLAMELESS_TENANT_DOMAIN) => {
                 const containsBlamelessDomainUrl =
-                    BLAMELESS_TENANT_BASE_URL.includes('.blameless.io/api/v1/')
+                    BLAMELESS_TENANT_DOMAIN.includes('.blameless.io/')
 
-                const containsHttps =
-                    BLAMELESS_TENANT_BASE_URL.includes('https')
+                const containsHttps = BLAMELESS_TENANT_DOMAIN.includes('https')
 
                 if (containsBlamelessDomainUrl && containsHttps) {
                     console.log('  ✓ Valid!')
