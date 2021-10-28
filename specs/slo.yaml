@@ -26,6 +26,3 @@ spec:
   op: lte | gte | lt | gt    # conditional operator used to compare the SLI against the value.
   value: numeric             # value used to compare metrics values (e.g. Latency)
   valueMetric: ms | s
-
-  # required
-  errorBudgetPolicyName: string # name of the error budget policy to attach to this SLO - See spec for AlertPolicy
