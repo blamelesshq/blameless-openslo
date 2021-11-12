@@ -1,6 +1,6 @@
 {
   "name": "@blamelesshq/blameless-slo-validator",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "",
   "main": "lib/index.js",
   "publishConfig": {
@@ -23,12 +23,15 @@
   "license": "ISC",
   "dependencies": {
     "@blamelesshq/blameless-slo-deploy": "^1.0.10",
+    "arg": "^5.0.1",
+    "axios": "^0.24.0",
     "chalk": "^4.1.2",
     "commander": "^8.2.0",
     "dotenv": "^10.0.0",
     "inquirer": "^8.2.0",
     "joi": "^17.4.2",
     "js-yaml": "^4.1.0",
+    "listr": "^0.14.3",
     "lodash": "^4.17.21",
     "octokit": "^1.7.0"
   },
@@ -38,6 +41,6 @@
   "files": [
     "bin/",
     "lib/",
-    ".env"
+    "blameless-deploy/"
   ]
 }

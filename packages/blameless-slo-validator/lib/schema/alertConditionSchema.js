@@ -20,7 +20,7 @@ const alertConditionSchema = Joi.object().keys({
                     .required(),
                 threshold: Joi.when('kind', {
                     is: 'percent_depleted',
-                    then: Joi.number().precision(5).min(0).max(1).required(),
+                    then: Joi.number().min(0).max(1).required(),
                     otherwise: Joi.number().integer().min(0).max(27).required(),
                 }),
             }),
