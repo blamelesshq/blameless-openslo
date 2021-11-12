@@ -20,19 +20,10 @@ const sloSchema = Joi.object().keys({
                 .valid('development', 'testing', 'active')
                 .required(),
             sliName: Joi.string().required(),
-            target: Joi.number().required().min(0).less(1),
-            op: Joi.when(Joi.ref('/sliType'), {
-                is: Joi.exist().equal('thresholdMetric'),
-                then: Joi.string().valid('lte', 'gte', 'lt', 'gt').required(),
-            }),
-            value: Joi.when(Joi.ref('/sliType'), {
-                is: Joi.exist().equal('thresholdMetric'),
-                then: Joi.number().greater(0).required(),
-            }),
-            valueMetric: Joi.when(Joi.ref('/sliType'), {
-                is: Joi.exist().equal('thresholdMetric'),
-                then: Joi.string().valid('ms', 's').required(),
-            }),
+            target: Joi.number().required().min(1).less(100),
+            op: Joi.string().valid('lte', 'gte', 'lt', 'gt').required(),
+            valueMetric: Joi.string().valid('ms', 's').required(),
+            value: Joi.number().greater(0).required(),
             errorBudgetPolicyName: Joi.string().optional(),
         })
         .required()

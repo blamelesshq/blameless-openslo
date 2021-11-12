@@ -1,8 +1,7 @@
-const yaml = require('js-yaml')
 const { logger, showErrors } = require('./')
-const fs = require('fs')
 const documentTypeChecker = require('./documentTypeChecker')
 const _ = require('lodash')
+const parseYamlToJson = require('./parseYamlToJson')
 
 const validateMultiple = (files) => {
     let processedDocument,
@@ -17,11 +16,9 @@ const validateMultiple = (files) => {
         return false
     }
 
-    if (files && files.length) {
+    if (files && files.length > 1) {
         files.forEach((file) => {
-            processedDocument = yaml.load(
-                fs.readFileSync(file?.fullPath, 'utf-8')
-            )
+            processedDocument = parseYamlToJson(file?.fullPath)
 
             const documentType = documentTypeChecker(
                 processedDocument?.kind &&
@@ -53,6 +50,42 @@ const validateMultiple = (files) => {
         return {
             isValid: hasErrors ? false : true,
             validDocuments: _.groupBy(allValidDocs, 'kind'),
+        }
+    }
+
+    if (files && files.length === 1) {
+        files.forEach((file) => {
+            processedDocument = parseYamlToJson(file?.fullPath)
+            const documentType = documentTypeChecker(
+                processedDocument?.kind &&
+                    processedDocument?.kind.toLowerCase(),
+                processedDocument
+            )
+
+            if (documentType && documentType?.error) {
+                showErrors(
+                    documentType?.error?.details,
+                    processedDocument?.kind
+                )
+                hasErrors = true
+            }
+
+            if (
+                documentType &&
+                documentType?.error == null &&
+                documentType?.value
+            ) {
+                showErrors(
+                    documentType?.error?.details,
+                    processedDocument?.kind
+                )
+                allValidDocs.push(documentType?.value)
+            }
+        })
+
+        return {
+            isValid: hasErrors ? false : true,
+            validDocuments: allValidDocs,
         }
     }
 }
