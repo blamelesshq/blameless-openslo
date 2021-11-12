@@ -4,7 +4,6 @@ on:
   push:
     paths:
       - 'packages/blameless-slo-validator/**'
-      - '!packages/blameless-cli/**'
 
 jobs:
     publish-gpr:

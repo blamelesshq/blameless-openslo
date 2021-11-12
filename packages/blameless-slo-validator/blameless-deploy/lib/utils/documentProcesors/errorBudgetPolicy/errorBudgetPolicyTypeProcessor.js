@@ -189,6 +189,16 @@ const createErrorBudgetPolicy = async (document) => {
                 document
             )}`
         )
+
+        throw new Error(
+            `EBP name: "${ebpName(document)}" ID: ${
+                exist?.id
+            } already exist. Description for EBP name: "${ebpName(
+                document
+            )}" has not been updated. Current description: ${ebpDescription(
+                document
+            )}`
+        )
     }
 
     if (exist && isEBPDescUpdated) {
@@ -229,7 +239,10 @@ const createErrorBudgetPolicy = async (document) => {
                     * ThresholdTypeId ${ebpThresholdTypeId}\n
                     * Threshold ${isThresholdExist?.threshold}`
                 )
-                return
+
+                throw new Error(`Unable to create Notification Policy. Reason: Duplicate matching pair: \n
+                * ThresholdTypeId ${ebpThresholdTypeId}\n
+                * Threshold ${isThresholdExist?.threshold}`)
             }
 
             await createErrorBudgetPolicyThreshold(alertConditionRequest).then(
@@ -348,39 +361,16 @@ const createErrorBudgetPolicy = async (document) => {
 
 const errorBudgetPolicyTypeProcessor = async (document, inputResult) => {
     let response
+
     const ebpSteps = new Listr([
         {
-            title: 'Creating Error Budget Policy...',
-            task: async () => {
-                return new Listr(
-                    [
-                        {
-                            title: 'Getting Org Id ...',
-                            task: async () => await orgId(),
-                        },
-                        {
-                            title: 'Getting Error Budget Policy Name ...',
-                            task: () => ebpName(document),
-                        },
-                        {
-                            title: 'Getting Error Budget Policy Description ...',
-                            task: () => ebpDescription(document),
-                        },
-                        {
-                            title: 'Creating Error Budget Policy ...',
-                            task: async () =>
-                                await createErrorBudgetPolicy(document)
-                                    .then((result) => {
-                                        response = result
-                                    })
-                                    .catch((err) => {
-                                        throw new Error(err)
-                                    }),
-                        },
-                    ],
-                    { concurrent: true, exitOnError: false }
-                )
-            },
+            title: 'Creating EBP...',
+            task: async () =>
+                await createErrorBudgetPolicy(document)
+                    .then((result) => (response = result))
+                    .catch((err) => {
+                        throw new Error(err)
+                    }),
         },
     ])
     try {
@@ -392,13 +382,16 @@ const errorBudgetPolicyTypeProcessor = async (document, inputResult) => {
         logger.infoError(
             'ERRORS:',
             err?.errors
-                ?.toString()
-                .split(',')
-                .filter((c, index) => {
-                    return (
-                        err?.errors?.toString().split(',').indexOf(c) === index
-                    )
-                })
+                ? err?.errors
+                      ?.toString()
+                      .split(',')
+                      .filter((c, index) => {
+                          return (
+                              err?.errors?.toString().split(',').indexOf(c) ===
+                              index
+                          )
+                      })
+                : err.toString().replace('Error: Error: ', '')
         )
     }
     return response ? response : false
