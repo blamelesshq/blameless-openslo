@@ -1,4 +1,3 @@
-//const validate = require('@blamelesshq/blameless-slo-validator')
 const validate = require('../../../lib')
 
 const suggestOptions = async (options) => {

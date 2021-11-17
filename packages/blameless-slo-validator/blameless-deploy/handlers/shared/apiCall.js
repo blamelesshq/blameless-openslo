@@ -1,7 +1,7 @@
 const axios = require('axios').default
-const envConfig = require('../../lib/config/env')
+const envConfig = require('../../../lib/config/env')
 const getAuthToken = require('./getToken')
-const logger = require('../../lib/utils/logger')
+const logger = require('../../../lib/utils/logger')
 
 const apiCallHandler = axios.create({
     baseURL: envConfig.blamelessTenantBaseUrl,

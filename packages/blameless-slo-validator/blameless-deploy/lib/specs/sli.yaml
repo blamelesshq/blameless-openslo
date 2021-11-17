@@ -2,15 +2,17 @@ apiVersion: blameless/v1alpha
 kind: SLI # Service Level Indicator
 
 metadata:
-    name: Demo SLI Created # unique name of the SLI
+    name: TestSLI 11/16 # unique name of the SLI
     displayName: string # optional
 
-    service: demo-service # name of the service to associate this SLI with
+    service: demo-service-petko # name of the service to associate this SLI with
 
 spec:
-    description: Demo SLI Created should be displayed in description # optional - maps to user SLI definition in Blameless
+    description: TestSLI 11/16 after update # optional - maps to user SLI definition in Blameless
 
-    sliType: availability
+    sliType: latency
+
+    owner: kristijan@blameless.com
 
     # if sliType is Availability, then specify "ratioMetric", otherwise "thresholdMetric"
 
@@ -31,5 +33,5 @@ spec:
     thresholdMetric: # represents the metric used to inform the SLO in the objectives stanza
         source: prometheus # data source for the metric
         queryType: string # a name for the type of query to run on the data source
-        query: string # the query to run to return the metric
+        query: avg(prometheus_http_requests_total{code="200"}) # the query to run to return the metric
         metadata: # optional, allows data source specific details to be passed

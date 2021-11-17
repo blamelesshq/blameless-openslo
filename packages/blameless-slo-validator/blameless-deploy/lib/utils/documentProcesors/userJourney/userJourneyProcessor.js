@@ -1,13 +1,13 @@
 const Listr = require('listr')
-const logger = require('../../logger')
+const logger = require('../../../../../lib/utils/logger')
 
-const createUserJourneyHandler = require('../../../../handlers/createUserJourneyHandler')
+const createUserJourneyHandler = require('../../../../handlers/userJourney/createUserJourneyHandler')
 const getOrgId = require('../../../../handlers/shared/getOrgId')
 const getUserId = require('../../../../handlers/shared/getUserId')
 const getUserJourneysHandler = require('../../../../handlers/userJourney/getUserJourneysHandler')
 const updateUserJourneyHandler = require('../../../../handlers/userJourney/updateUserJourneyHandler')
 
-let isUpdateOperation = false
+let isUpdateOp = false
 
 const orgId = async () => {
     const result = await getOrgId()
@@ -28,36 +28,42 @@ const getUserJourneyDesc = (document) => {
 }
 
 const createUserJourneyRecord = async (document) => {
-    const userJourneys = await getUserJourneysHandler({
-        orgId: await orgId(),
-    })
-    const isUserJourneyExist =
-        userJourneys &&
-        userJourneys.find((item) => item.name === document?.metadata?.name)?.id
-    if (isUserJourneyExist) {
-        isUpdateOperation = true
-        const updateUserJourneyRequest = {
-            orgId: await orgId(),
-            id: isUserJourneyExist,
-            model: {
-                name: getUserJourneyName(document),
-                description: getUserJourneyDesc(document),
-                userId: await userId(document),
-            },
-        }
+    const [oId, uId] = await Promise.all([orgId(), userId(document)])
 
-        return updateUserJourneyHandler(updateUserJourneyRequest)
-    }
-    const createUserJourneyRequest = {
-        orgId: await orgId(),
+    const [userJourneys] = await Promise.all([
+        getUserJourneysHandler({ orgId: oId }),
+    ])
+
+    const userJourneyRequest = {
+        orgId: oId,
         model: {
             name: getUserJourneyName(document),
             description: getUserJourneyDesc(document),
-            userId: await userId(document),
+            userId: uId,
         },
     }
 
-    return createUserJourneyHandler(createUserJourneyRequest)
+    const userJourneyId =
+        userJourneys &&
+        userJourneys.find((item) => item.name === document?.metadata?.name)?.id
+
+    if (userJourneyId) {
+        isUpdateOp = true
+        return await updateUserJourneyHandler({
+            ...userJourneyRequest,
+            id: userJourneyId,
+        }).then((result) => ({
+            isUpdated: true,
+            data: result,
+        }))
+    } else {
+        return await createUserJourneyHandler(userJourneyRequest).then(
+            (result) => ({
+                isUpdated: false,
+                data: result,
+            })
+        )
+    }
 }
 
 const userJourneyProcessor = async (document) => {
@@ -65,9 +71,9 @@ const userJourneyProcessor = async (document) => {
     const userJourneySteps = new Listr([
         {
             title: `${
-                isUpdateOperation
-                    ? 'Updating User Journey'
-                    : 'Creating User Journey'
+                isUpdateOp
+                    ? 'Updating User Journey ...'
+                    : 'Creating User Journey ...'
             }`,
             task: async () => {
                 return new Listr(
@@ -95,9 +101,9 @@ const userJourneyProcessor = async (document) => {
                         },
                         {
                             title: `${
-                                isUpdateOperation
-                                    ? 'Updating User Journey'
-                                    : 'Creating User Journey'
+                                isUpdateOp
+                                    ? 'Updating User Journey ...'
+                                    : 'Creating User Journey ...'
                             }`,
                             task: async () =>
                                 await createUserJourneyRecord(document)
@@ -114,18 +120,18 @@ const userJourneyProcessor = async (document) => {
             },
         },
     ])
-
     try {
         await userJourneySteps.run()
         logger.infoSuccess(
-            `SUCCESSFULLY CREATED: ${JSON.stringify(
-                response?.userJourney?.name
+            `SUCCESSFULLY ${
+                response?.isUpdated ? 'UPDATED' : 'CREATED'
+            } USER JOURNEY: ${JSON.stringify(
+                response?.data?.userJourney?.name
             )}`
         )
     } catch (err) {
         logger.infoError('ERRORS:', err?.errors?.toString().split(','))
     }
-
     return response ? response : false
 }
 

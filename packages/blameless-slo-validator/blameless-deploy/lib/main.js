@@ -1,4 +1,5 @@
-const logger = require('./utils/logger')
+const logger = require('../../lib/utils/logger')
+
 const documentProcesorByType = require('./utils/documentProcessorByType')
 const _ = require('lodash')
 // const { listOfMinimalRequiredDocuments } = require('../lib/config/constants')

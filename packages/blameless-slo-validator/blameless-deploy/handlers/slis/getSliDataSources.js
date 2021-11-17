@@ -1,5 +1,5 @@
-const envConfig = require('../lib/config/env')
-const apiCallHandler = require('./shared/apiCall')
+const envConfig = require('../../../lib/config/env')
+const apiCallHandler = require('../shared/apiCall')
 
 const getSliDataSources = async () => {
     try {

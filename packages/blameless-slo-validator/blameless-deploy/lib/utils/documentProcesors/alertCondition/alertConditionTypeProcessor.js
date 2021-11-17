@@ -1,5 +1,5 @@
 const Listr = require('listr')
-const logger = require('../../logger')
+const logger = require('../../../../../lib/utils/logger')
 
 const getOrgId = require('../../../../handlers/shared/getOrgId')
 const getErrorBudgetPolicyThresholdTypesHanlder = require('../../../../handlers/alertCondition/getErrorBudgetPolicyThresholdTypesHanlder')

@@ -1,5 +1,5 @@
 const Listr = require('listr')
-const logger = require('../../logger')
+const logger = require('../../../../../lib/utils/logger')
 
 const getOrgId = require('../../../../handlers/shared/getOrgId')
 const getUserId = require('../../../../handlers/shared/getUserId')
@@ -127,27 +127,32 @@ const errorBudgetPolicy = async (document) => {
 }
 
 const createSlo = async (document, inputResult) => {
-    const createSloRequest = {
-        orgId:
-            inputResult && inputResult?.orgId
-                ? inputResult?.orgId
-                : await orgId(),
-        model: {
-            userId: inputResult?.sli?.userId
-                ? inputResult?.sli?.userId
-                : await userId(document),
-            name: await getSloName(document),
-            status: await getSloStatus(document),
-            comparisonOperator: await getComparisonOp(document?.spec?.op),
-            metricUnit: await getMetricUnit(document),
-            errorBudgetPolicyId: await errorBudgetPolicy(document),
-            objectivePercentage: getSloObjectives(document),
-            sliId: await getSliName(document),
-            userJourneyId: await getJourneyId(document),
-        },
-    }
+    const [uId, sloStatus, operator, mUnit, ebpId, sId, uJourneyId, oId] =
+        await Promise.all([
+            userId(document),
+            getSloStatus(document),
+            getComparisonOp(document?.spec?.op),
+            getMetricUnit(document),
+            errorBudgetPolicy(document),
+            getSliName(document),
+            getJourneyId(document),
+            orgId(),
+        ])
 
-    return await createSLOHandler(createSloRequest)
+    await createSLOHandler({
+        orgId: inputResult && inputResult?.orgId ? inputResult?.orgId : oId,
+        model: {
+            userId: inputResult?.sli?.userId ? inputResult?.sli?.userId : uId,
+            name: getSloName(document),
+            status: sloStatus,
+            comparisonOperator: operator,
+            metricUnit: mUnit,
+            errorBudgetPolicyId: ebpId,
+            objectivePercentage: getSloObjectives(document),
+            sliId: sId,
+            userJourneyId: uJourneyId,
+        },
+    })
 }
 
 const sloProcessor = async (document, inputResult) => {
