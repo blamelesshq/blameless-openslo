@@ -9,6 +9,7 @@ const getServices = require('../../../../handlers/service/getServicesHandler')
 const createSliHandler = require('../../../../handlers/slis/createSliHandler')
 const getAllSLIs = require('../../../../handlers/slis/getAllSLIsHandler')
 const updateSliHandler = require('../../../../handlers/slis/updateSliHandler')
+const getGcpClusterSettingsHandler = require('../../../../handlers/slis/getGcpClusterSettingsHandler')
 
 const throwError = (msg) => {
     throw msg
@@ -72,6 +73,25 @@ const dataSourceId = async (document) => {
                 item?.vendorId.toLowerCase() ===
                 document?.spec?.thresholdMetric?.source.toLowerCase()
         )?.id
+    }
+}
+
+const gcpSettings = async (document) => {
+    const settings = await getGcpClusterSettingsHandler()
+    const [isSettingExist] =
+        settings &&
+        settings?.response &&
+        settings?.response?.gcp &&
+        Object.values(settings?.response?.gcp).filter(
+            (item) => item?.name === document?.spec?.metricSource?.name
+        )
+
+    const settingsId = Object.keys(settings?.response?.gcp).find(
+        (key) => settings?.response?.gcp[key] === isSettingExist
+    )
+
+    if (isSettingExist && settingsId) {
+        return settingsId
     }
 }
 
@@ -221,7 +241,11 @@ const sliTypeProcessor = async (document, inputResult) => {
     try {
         await serviceSteps.run()
         logger.infoSuccess(
-            `SUCCESSFULLY CREATED: ${JSON.stringify(response?.data?.name)}`
+            `SUCCESSFULLY ${
+                response?.isUpdated ? 'UPDATED' : 'CREATED'
+            } SERVICE LEVEL INDICATOR: ${JSON.stringify(
+                response?.data?.sli?.name
+            )}`
         )
     } catch (err) {
         logger.infoError('ERRORS:', err?.errors?.toString().split(','))

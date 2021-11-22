@@ -2,10 +2,10 @@ apiVersion: blameless/v1alpha
 kind: Service
 
 metadata:
-    name: demo-service # unique name of the Service (group of SLIs)
-    displayName: Kristijan's Display Name # optional
+    name: string # unique name of the Service (group of SLIs)
+    displayName: string # optional
 
 spec:
-    description: Kristijan's CLI description
-    notes: Kristijan's test notes # optional
-    owner: kristijan@blameless.com
+    description: string
+    notes: string # optional
+    owner: string

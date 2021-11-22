@@ -2,10 +2,11 @@ const userJourneyProcesor = require('../utils/documentProcesors/userJourney/user
 const serviceProcessor = require('../utils/documentProcesors/service/serviceProcessor')
 const sliTypeProcessor = require('../utils/documentProcesors/sli/sliTypeProcessor')
 const sloProcessor = require('../utils/documentProcesors/slo/sloProcessor')
-const _ = require('lodash')
+
+const _flattenObj = (obj) => Object.values(obj).flat()
 
 const waterfallSloCreateHandler = async (documents) => {
-    const docs = _.flatten(Object.values(documents))
+    const docs = _flattenObj(documents)
     const userJourneyDocs =
         docs && docs.filter((d) => d?.kind === 'UserJourney')
     const servicesDocs = docs && docs.filter((d) => d?.kind === 'Service')
