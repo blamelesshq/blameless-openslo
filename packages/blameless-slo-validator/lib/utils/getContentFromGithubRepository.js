@@ -1,33 +1,20 @@
-const { Octokit } = require('octokit')
+const getContentFromGithubHandler = require('../../blameless-deploy/handlers/shared/getContentFromGithubHandler')
 const { logger } = require('.')
 const envConfig = require('../config/env')
 
-const octokitInstance = new Octokit({ auth: envConfig.pat })
+const retrieveSpecificationFromGithubRepo = async (path) => {
+    const cleanSpecPath = path && path.replace(/\/$/, '')
 
-const getContentFromGithubRepo = async (specPath) => {
-    const cleanSpecPath = specPath && specPath.replace(/\/$/, '')
     try {
-        const result = await octokitInstance.request(
-            'GET /repos/{owner}/{repo}/contents/{path}',
-            {
-                owner: envConfig.owner,
-                repo: envConfig.repo,
-                path: cleanSpecPath,
-            }
-        )
-
-        if (result && result?.status === 200) {
-            return result?.data
-        }
+        const result = await getContentFromGithubHandler(cleanSpecPath)
+        return result
     } catch (error) {
-        logger.error(`Unable to retrieve data from Github repository \n
-        Repository: ${envConfig.repo}\n
-        Owner: ${envConfig.owner}\n
-        Path: ${specPath}\n
-        Error: ${error}\n
-        Please check the information above, and update accordingly if necessary `)
+        logger.error(error)
+        logger.info(
+            `GITHUB Info: \n* Repository: ${envConfig.repo}\n* Owner: ${envConfig.owner}\n* Content Path: ${path}\nPlease make sure that above information are correct.`
+        )
         return false
     }
 }
 
-module.exports = getContentFromGithubRepo
+module.exports = retrieveSpecificationFromGithubRepo

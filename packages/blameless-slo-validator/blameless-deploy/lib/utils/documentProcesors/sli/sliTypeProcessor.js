@@ -1,14 +1,19 @@
 const Listr = require('listr')
-const logger = require('../../logger')
+const logger = require('../../../../../lib/utils/logger')
 
 const getOrgId = require('../../../../handlers/shared/getOrgId')
-const getAllSliTypes = require('../../../../handlers/getSliTypes')
-const getSliDataSources = require('../../../../handlers/getSliDataSources')
+const getAllSliTypes = require('../../../../handlers/slis/getSliTypes')
+const getSliDataSources = require('../../../../handlers/slis/getSliDataSources')
 const getUserId = require('../../../../handlers/shared/getUserId')
-const getServices = require('../../../../handlers/getServices')
+const getServices = require('../../../../handlers/service/getServicesHandler')
 const createSliHandler = require('../../../../handlers/slis/createSliHandler')
 const getAllSLIs = require('../../../../handlers/slis/getAllSLIsHandler')
 const updateSliHandler = require('../../../../handlers/slis/updateSliHandler')
+const getGcpClusterSettingsHandler = require('../../../../handlers/slis/getGcpClusterSettingsHandler')
+
+const throwError = (msg) => {
+    throw msg
+}
 
 const orgId = async () => {
     const result = await getOrgId()
@@ -71,6 +76,25 @@ const dataSourceId = async (document) => {
     }
 }
 
+const gcpSettings = async (document) => {
+    const settings = await getGcpClusterSettingsHandler()
+    const [isSettingExist] =
+        settings &&
+        settings?.response &&
+        settings?.response?.gcp &&
+        Object.values(settings?.response?.gcp).filter(
+            (item) => item?.name === document?.spec?.metricSource?.name
+        )
+
+    const settingsId = Object.keys(settings?.response?.gcp).find(
+        (key) => settings?.response?.gcp[key] === isSettingExist
+    )
+
+    if (isSettingExist && settingsId) {
+        return settingsId
+    }
+}
+
 const serviceId = async (document) => {
     const result = await getServices()
 
@@ -83,9 +107,11 @@ const serviceId = async (document) => {
                     document?.metadata?.service?.toLowerCase()
         )?.id
 
-    if (matchingId) {
-        return matchingId
-    }
+    return matchingId
+        ? matchingId
+        : throwError(
+              `Unable to get serviceId. Please make sure that service "${document?.metadata?.service?.toLowerCase()}" already exist`
+          )
 }
 
 const userId = async (document) => {
@@ -97,17 +123,33 @@ const userId = async (document) => {
 
 const createSli = async (document, inputResult) => {
     const documentType = document?.spec?.sliType.toLowerCase()
-    const createSliReq = {
-        orgId:
-            inputResult && inputResult?.orgId
-                ? inputResult?.orgId
-                : await orgId(),
+
+    const [uId, slis, servId, sTypeId, sourceId, oId] = await Promise.all([
+        userId(document),
+        getAllSLIs(),
+        serviceId(document),
+        sliTypeId(document),
+        dataSourceId(document),
+        orgId(),
+    ])
+
+    const existingSliId =
+        slis &&
+        slis.find(
+            (item) =>
+                item?.name &&
+                item?.name?.toLowerCase() ===
+                    document?.metadata?.name?.toLowerCase()
+        )?.id
+
+    const sliRequest = {
+        orgId: inputResult && inputResult?.orgId ? inputResult?.orgId : oId,
         model: {
             name: getSliName(document),
             description: getSliDescription(document),
-            dataSourceId: await dataSourceId(document),
-            sliTypeId: await sliTypeId(document),
-            serviceId: await serviceId(document),
+            dataSourceId: sourceId,
+            sliTypeId: sTypeId,
+            serviceId: servId,
             metricPath:
                 documentType && documentType === 'availability'
                     ? JSON.stringify({
@@ -123,49 +165,48 @@ const createSli = async (document, inputResult) => {
             userId:
                 inputResult && inputResult?.createdByUserId
                     ? inputResult?.createdByUserId
-                    : await userId(document),
+                    : uId,
         },
     }
 
-    const slis = await getAllSLIs()
-    const matchingSliId =
-        slis &&
-        slis.find(
-            (item) =>
-                item?.name &&
-                item?.name?.toLowerCase() ===
-                    document?.metadata?.name?.toLowerCase()
-        )?.id
-
-    if (matchingSliId) {
-        return updateSliHandler({ ...createSliReq, id: matchingSliId })
+    if (existingSliId) {
+        return await updateSliHandler({
+            ...sliRequest,
+            id: existingSliId,
+        }).then((result) => ({
+            isUpdated: true,
+            data: result,
+        }))
+    } else {
+        return await createSliHandler(sliRequest).then((result) => ({
+            isUpdated: false,
+            data: result,
+        }))
     }
-
-    return createSliHandler(createSliReq)
 }
 
 const sliTypeProcessor = async (document, inputResult) => {
     let response
     const serviceSteps = new Listr([
         {
-            title: 'Creating Sli',
+            title: 'Creating Sli ...',
             task: async () => {
                 return new Listr(
                     [
                         {
-                            title: 'Getting orgId',
+                            title: 'Getting orgId ...',
                             task: async () => await orgId(),
                         },
                         {
-                            title: 'Getting Sli name',
+                            title: 'Getting Sli name ...',
                             task: () => getSliName(document),
                         },
                         {
-                            title: 'Getting Sli description',
+                            title: 'Getting Sli description ...',
                             task: () => getSliDescription(document),
                         },
                         {
-                            title: 'Getting Sli Data Source',
+                            title: 'Getting Sli Data Source ...',
                             task: () => {
                                 getSliDataSources(document).catch((error) => {
                                     throw new Error(error)
@@ -173,7 +214,7 @@ const sliTypeProcessor = async (document, inputResult) => {
                             },
                         },
                         {
-                            title: 'Getting Sli Type',
+                            title: 'Getting Sli Type ...',
                             task: async () => {
                                 await sliTypeId(document).catch((error) => {
                                     throw new Error(error)
@@ -181,7 +222,7 @@ const sliTypeProcessor = async (document, inputResult) => {
                             },
                         },
                         {
-                            title: 'Creating Sli...',
+                            title: 'Creating Sli ...',
                             task: async () =>
                                 await createSli(document, inputResult)
                                     .then((result) => {
@@ -200,7 +241,11 @@ const sliTypeProcessor = async (document, inputResult) => {
     try {
         await serviceSteps.run()
         logger.infoSuccess(
-            `SUCCESSFULLY CREATED: ${JSON.stringify(response?.name)}`
+            `SUCCESSFULLY ${
+                response?.isUpdated ? 'UPDATED' : 'CREATED'
+            } SERVICE LEVEL INDICATOR: ${JSON.stringify(
+                response?.data?.sli?.name
+            )}`
         )
     } catch (err) {
         logger.infoError('ERRORS:', err?.errors?.toString().split(','))

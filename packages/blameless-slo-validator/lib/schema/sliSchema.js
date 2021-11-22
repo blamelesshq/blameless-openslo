@@ -19,6 +19,13 @@ const sliSchema = Joi.object().keys({
             sliType: Joi.string()
                 .valid('availability', 'latency', 'throughput', 'saturation')
                 .required(),
+            metricSource: Joi.object().keys({
+                enablePrometheus: Joi.boolean().required(),
+                mode: Joi.string().valid('direct', 'gcp', 'lambda').required(),
+                tenantKey: Joi.string().required(),
+                sourceName: Joi.string().required(),
+                token: Joi.string().required(),
+            }),
             ratioMetric: Joi.object()
                 .keys({
                     good: Joi.object().keys({

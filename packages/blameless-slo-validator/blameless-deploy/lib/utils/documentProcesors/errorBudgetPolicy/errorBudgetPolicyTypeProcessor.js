@@ -1,5 +1,5 @@
 const Listr = require('listr')
-const logger = require('../../logger')
+const logger = require('../../../../../lib/utils/logger')
 
 const getOrgId = require('../../../../handlers/shared/getOrgId')
 const createErrorBudgetPolicyHandler = require('../../../../handlers/errorBudgetPolicy/createErrorBudgetPolicyHandler')
@@ -9,8 +9,6 @@ const createErrorBudgetPolicyAction = require('../../../../handlers/alertNotific
 const getErrorBudgetPolicyActionsType = require('../../../../handlers/alertNotificationTarget/getErrorBudgetPolicyActionTypesHandler')
 const getUserId = require('../../../../handlers/shared/getUserId')
 const incidentSeverities = require('../../../../handlers/shared/incidentSeverities')
-const deleteErrorBudgetPolicyThresholdHandler = require('../../../../handlers/alertCondition/deleteErrorBudgetPolicyThresholdHandler')
-const deleteErrorBudgetPolicyActionHandler = require('../../../../handlers/alertNotificationTarget/deleteErrorBudgetPolicyActionHandler')
 const getErrorBudgetPoliciesHandler = require('../../../../handlers/errorBudgetPolicy/getErrorBudgetPoliciesHandler')
 const getErrorBudgetPolicyThresholdsHandler = require('../../../../handlers/alertCondition/getErrorBudgetPolicyThresholdsHandler')
 const updateErrorBudgetPolicyHandler = require('../../../../handlers/errorBudgetPolicy/updateErrorBudgetPolicyHandler')
@@ -257,15 +255,13 @@ const createErrorBudgetPolicy = async (document) => {
                             (v) => v !== undefined
                         )
 
-                        let errorBudgetActionReq
-
                         if (cleanActId) {
                             const metadata = await generateActionMetadata(
                                 document,
                                 cleanActId.type
                             )
 
-                            errorBudgetActionReq = {
+                            const errorBudgetActionReq = {
                                 orgId: result?.errorBudgetPolicyThreshold
                                     ?.orgId,
                                 model: {
@@ -276,11 +272,11 @@ const createErrorBudgetPolicy = async (document) => {
                                     actionMetadata: metadata,
                                 },
                             }
-                        }
 
-                        await createErrorBudgetPolicyAction(
-                            errorBudgetActionReq
-                        )
+                            await createErrorBudgetPolicyAction(
+                                errorBudgetActionReq
+                            )
+                        }
                     }
                 }
             )

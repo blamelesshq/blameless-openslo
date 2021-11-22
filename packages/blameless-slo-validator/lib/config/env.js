@@ -26,7 +26,9 @@ const envConfig = {
     grandType: process.env.BLAMELESS_OAUTH_GRAND_TYPE,
     getOrgIdBase: `${BLAMELESS_TENANT_DOMAIN}/identity/tenant`,
     userIdBase: `${BLAMELESS_TENANT_DOMAIN}/identity/user/authName/`,
+    incidentSeverities: `${BLAMELESS_TENANT_DOMAIN}/incident-severities`,
     tempAuthToken: config?.BLAMELESS_TEMP_AUTH_TOKEN,
+    settings: `${BLAMELESS_TENANT_DOMAIN}prometheus/settings`,
     blamelessTenantBaseUrl: `${BLAMELESS_TENANT_DOMAIN}/services/SLOServiceCrud/`,
 }
 

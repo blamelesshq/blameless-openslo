@@ -1,11 +1,11 @@
 const processMultipleDocumentsFromDirectory = require('./utils/processMultipleFilesFromDir')
 const validateMultiple = require('./utils/validateMultipleFilesFromDir')
-const getContentFromGithubRepo = require('./utils/getContentFromGithubRepository')
+const retrieveSpecificationFromGithubRepo = require('./utils/getContentFromGithubRepository')
 const validateGithubMultiple = require('./utils/validateGithubMultiple')
 
 const validate = async (filePath, source) => {
     if (source && source === 'github') {
-        const remoteFiles = await getContentFromGithubRepo(filePath)
+        const remoteFiles = await retrieveSpecificationFromGithubRepo(filePath)
         return await validateGithubMultiple(remoteFiles)
     }
 

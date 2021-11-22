@@ -1,4 +1,4 @@
-const envConfig = require('../../lib/config/env')
+const envConfig = require('../../../lib/config/env')
 const apiCallHandler = require('./apiCall')
 
 const getOrgId = async () => {

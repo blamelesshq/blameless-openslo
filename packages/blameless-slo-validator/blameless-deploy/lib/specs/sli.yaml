@@ -2,15 +2,24 @@ apiVersion: blameless/v1alpha
 kind: SLI # Service Level Indicator
 
 metadata:
-    name: Demo SLI Created # unique name of the SLI
+    name: string # unique name of the SLI
     displayName: string # optional
 
-    service: demo-service # name of the service to associate this SLI with
+    service: string # name of the service to associate this SLI with
 
 spec:
-    description: Demo SLI Created should be displayed in description # optional - maps to user SLI definition in Blameless
+    description: string # optional - maps to user SLI definition in Blameless
 
-    sliType: availability
+    sliType: latency
+
+    owner: kristijan@blameless.com
+
+    metricSource:
+        enablePrometheus: true # required
+        mode: string # required should be one of prometheus | aws lambda | gcp
+        tenantKey: string # required
+        name: string # required
+        token: string # required
 
     # if sliType is Availability, then specify "ratioMetric", otherwise "thresholdMetric"
 
@@ -18,12 +27,12 @@ spec:
         good: # the numerator
             source: prometheus # data source for the "good" numerator
             queryType: string # a name for the type of query to run on the data source
-            query: avg(prometheus_http_requests_total{code="200"}) # the query to run to return the numerator
+            query: search host="jgalley" index="wt_events" payload.uri="/owners/*" | eval success=if('payload.status'="200", 1, 0) | rename _time AS bltime, success as blvalue | fields bltime blvalue # the query to run to return the numerator
             metadata: # optional, allows data source specific details to be passed
         total: # the denominator
             source: prometheus # data source for the "total" denominator
             queryType: string # a name for the type of query to run on the data source
-            query: avg(prometheus_http_requests_total) # the query to run to return the denominator
+            query: search host="jgalley" index="wt_events" payload.uri="/owners/*" | eval success=if('payload.status'="200", 1, 0) | rename _time AS bltime, success as blvalue | fields bltime blvalue # the query to run to return the denominator
             metadata: # optional, allows data source specific details to be passed
 
     # OR
@@ -31,5 +40,5 @@ spec:
     thresholdMetric: # represents the metric used to inform the SLO in the objectives stanza
         source: prometheus # data source for the metric
         queryType: string # a name for the type of query to run on the data source
-        query: string # the query to run to return the metric
+        query: search host="jgalley" index="wt_events" payload.uri="/owners/*" | eval success=if('payload.status'="200", 1, 0) | rename _time AS bltime, success as blvalue | fields bltime blvalue # the query to run to return the metric
         metadata: # optional, allows data source specific details to be passed
