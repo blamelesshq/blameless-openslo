@@ -1,6 +1,6 @@
 {
-  "name": "@blamelesshq/blameless-slo-validator",
-  "version": "1.0.18",
+  "name": "@blamelesshq/blameless-slo",
+  "version": "1.0.1",
   "description": "",
   "main": "lib/index.js",
   "publishConfig": {
