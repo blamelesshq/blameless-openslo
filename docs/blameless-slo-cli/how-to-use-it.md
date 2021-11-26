@@ -42,11 +42,9 @@ Validate command is used for validation `.yaml` specs before they are executed a
 
 **`<path_to_yaml>`** - Path to your file, or folder that contains .yaml files.
 
-:::tip Info
 
-Validate command only validates .YAML specs. This command won't trigger deploy process. If you want to deploy resource you have to use deploy command.
+> **_NOTE:_**  Validate command only validates .YAML specs. This command won't trigger deploy process. If you want to deploy resource you have to use deploy command.
 
-:::
 
 ### Validation message types?
 
