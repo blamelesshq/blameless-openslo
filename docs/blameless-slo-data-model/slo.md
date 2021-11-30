@@ -1,7 +1,3 @@
----
-sidebar_position: 3
----
-
 # SLOs
 
 -   One or more SLOs can be created on the same SLI.
@@ -35,3 +31,12 @@ The **SLO status** is a required SLO setting which indicates if the attached **E
 | Owner       | Required    |
 
 The **`Owner`** is currently a required parameter. Blameless SLO API require an owner email address.
+
+<div style="display: flex; flex-direction: row; flex-wrap: nowrap; justify-content: space-between;">
+<div>
+    <a href="slis.md">< PREV: SLIs</a>
+</div>
+<div>
+    <a href="../blameless-slo-cli/describe-blameless-cli.md">NEXT: WHAT IS BLAMELESS SLO CLI ></a>
+</div>
+</div>

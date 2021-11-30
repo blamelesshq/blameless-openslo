@@ -1,7 +1,3 @@
----
-sidebar_position: 2
----
-
 # SLIs
 
 -   **SLIs** are created first and independently from **SLOs**.
@@ -61,3 +57,12 @@ thresholdMetric: # represents the metric used to inform the SLO in the objective
     query: string # the query to run to return the metric
     metadata: # optional, allows data source specific details to be passed
 ```
+
+<div style="display: flex; flex-direction: row; flex-wrap: nowrap; justify-content: space-between;">
+<div>
+    <a href="resource-types.md">< PREV: RESOURCE TYPES</a>
+</div>
+<div>
+    <a href="slo.md">NEXT: SLO ></a>
+</div>
+</div>

@@ -1,13 +1,9 @@
----
-sidebar_position: 4
----
-
 # How to use it?
 
 Once you have successfully installed package, open your terminal and type following command **`blameless-slo`**.
 
 <p align="center">
-    <img src="/img/package_img/blameless-slo_config.PNG" />
+    <img src="../img/blameless-slo_config.PNG" />
 </p>
 
 If you see this message like above, that means that your package has been succesfully installed but config is missing. You need to set the proper values before you start using it.
@@ -25,7 +21,7 @@ If you see this message like above, that means that your package has been succes
 Once you successfully set config, re-type again the same command **`blameless-slo`**.
 
 <p align="center">
-    <img src="/img/package_img/blameless_slo_set_config.PNG" />
+    <img src="../img/blameless_slo_set_config.PNG" />
 </p>
 
 Now you can see that you have some available commands for executing **`blameless-slo validate`** and **`blameless-slo deploy`**
@@ -42,9 +38,7 @@ Validate command is used for validation `.yaml` specs before they are executed a
 
 **`<path_to_yaml>`** - Path to your file, or folder that contains .yaml files.
 
-
-> **_NOTE:_**  Validate command only validates .YAML specs. This command won't trigger deploy process. If you want to deploy resource you have to use deploy command.
-
+> **_NOTE:_** Validate command only validates .YAML specs. This command won't trigger deploy process. If you want to deploy resource you have to use deploy command.
 
 ### Validation message types?
 
@@ -68,13 +62,12 @@ blameless-slo validate -s local -f ./specs/user_journey.yaml
 blameless-slo validate -s local -f ./specs/sli.yaml
 ```
 
-:x: **[BLAMELESS] ERROR : ========== Blameless SLI Validation Errors  ==========**. In this case we are displaying this kind od message because validation step for that spec was failed. Besides that we are displaying also information what is wrong.
+:x: **[BLAMELESS] ERROR : ========== Blameless SLI Validation Errors ==========**. In this case we are displaying this kind od message because validation step for that spec was failed. Besides that we are displaying also information what is wrong.
 
-**[BLAMELESS] ERROR : ========== Blameless SLI Validation Errors  ========== **<br />
+**[BLAMELESS] ERROR : ========== Blameless SLI Validation Errors ========== **<br />
 [BLAMELESS] ERROR : 1: "spec.metricSource.mode" must be one of [direct, gcp, lambda] <br />
 [BLAMELESS] ERROR : 2: "spec.metricSource.sourceName" is required <br />
 [BLAMELESS] ERROR : 3: "spec.metricSource.name" is not allowed <br />
-
 
 ### How to use deploy command?
 
@@ -87,3 +80,9 @@ Deploy command is used for creating/updating resources in your Blameless instanc
 **`<source>`** - Currently we support two types of source: **`local`** and **`github`**. So you have to choose between one of allowed options.
 
 **`<path_to_yaml>`** - Path to your file, or folder that contains .yaml files.
+
+<div style="display: flex; flex-direction: row; flex-wrap: nowrap; justify-content: space-between;">
+<div>
+    <a href="how-to-install.md">< PREV: HOW TO INSTALL IT?</a>
+</div>
+</div>

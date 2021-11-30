@@ -1,7 +1,3 @@
----
-sidebar_position: 1
----
-
 # Resource types in Blameless
 
 There are 8 resource types in 2 categories:
@@ -13,9 +9,7 @@ There are 8 resource types in 2 categories:
 -   Service (group of SLIs)
 -   SLI
 
-
 ## Resources specific to the Blameless specification
-
 
 ```yaml
 apiVersion: blameless/v1alpha
@@ -28,3 +22,12 @@ kind: SLI | Service | SLO | UserJourney | ErrorBudgetPolicy
 apiVersion: openslo/v1alpha
 kind: AlertPolict | Service | SLO | UserJourney
 ```
+
+<div style="display: flex; flex-direction: row; flex-wrap: nowrap; justify-content: space-between;">
+<div>
+    <a href="../intro.md">< PREV: INTRO</a>
+</div>
+<div>
+    <a href="slis.md">NEXT: SLIs ></a>
+</div>
+</div>

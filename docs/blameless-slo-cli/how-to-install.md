@@ -1,7 +1,3 @@
----
-sidebar_position: 3
----
-
 # How to install?
 
 ## Prerequisites
@@ -23,28 +19,39 @@ Next, go to your user root folder and find **`.npmrc`** file. If file exist modi
 //npm.pkg.github.com/:_authToken=YOUR_TOKEN
 ```
 
-:::tip Info
+---
+**Info**
 
 You need to setup PAT only in case if you are using private version of package. Later this package would be available in public **[npm repository](https://www.npmjs.com/)** and you don't need to setup your token.
 
-:::
+---
 
 ## Install package
 
 Open your terminal and execute following command:
 
-```jsx 
+```jsx
 npm install -g @blamelesshq/blameless-slo@1.0.1
 ```
 
-:::tip Note
+---
+**Note**
 
 Please replace **`1.0.1`** with current latest version, and make sure that always use latest version because that version contains latest features and bug fixes.
 
-:::
+---
 
 Or install via package.json
 
 ```jsx title="package.json"
 "@blamelesshq/blameless-slo": "1.0.1"
 ```
+
+<div style="display: flex; flex-direction: row; flex-wrap: nowrap; justify-content: space-between;">
+<div>
+    <a href="how-to-find-it.md">< PREV: HOW TO FIND IT?</a>
+</div>
+<div>
+    <a href="how-to-use-it.md">NEXT: HOW TO USE IT? ></a>
+</div>
+</div>
