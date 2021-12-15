@@ -39,6 +39,7 @@
   "files": [
     "bin/",
     "lib/",
-    "blameless-deploy/"
+    "blameless-deploy/",
+    "blameless-delete/"
   ]
 }
