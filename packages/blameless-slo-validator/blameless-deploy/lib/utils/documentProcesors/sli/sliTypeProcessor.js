@@ -243,9 +243,7 @@ const sliTypeProcessor = async (document, inputResult) => {
         logger.infoSuccess(
             `SUCCESSFULLY ${
                 response?.isUpdated ? 'UPDATED' : 'CREATED'
-            } SERVICE LEVEL INDICATOR: ${JSON.stringify(
-                response?.data?.sli?.name
-            )}`
+            } SERVICE LEVEL INDICATOR: ${JSON.stringify(response?.data?.name)}`
         )
     } catch (err) {
         logger.infoError('ERRORS:', err?.errors?.toString().split(','))

@@ -10,6 +10,8 @@ const sloStatusesHandler = require('../../../../handlers/slo/getSLOStatusesHandl
 const getSloComparisonOperatorsHandlers = require('../../../../handlers/slo/getSloComparisonOperatorsHandlers')
 const getSloMetricUnitTypesHandler = require('../../../../handlers/slo/getSloMetricUnitTypesHandler')
 const getErrorBudgetPolicyHandler = require('../../../../handlers/errorBudgetPolicy/getErrorBudgetPoliciesHandler')
+const getSLOsHandler = require('../../../../handlers/slo/getSLOsHandler')
+const updateSLOHandler = require('../../../../handlers/slo/updateSLOHandler')
 
 const orgId = async () => {
     const result = await getOrgId()
@@ -64,8 +66,10 @@ const getSliName = async (document) => {
 }
 
 const getJourneyId = async (document) => {
+    const [oId] = await Promise.all([orgId()])
+
     const userJourneys = await getUserJourneysHandler({
-        orgId: await getOrgId(),
+        orgId: oId,
     })
 
     const matchingSliId =
@@ -127,7 +131,7 @@ const errorBudgetPolicy = async (document) => {
 }
 
 const createSlo = async (document, inputResult) => {
-    const [uId, sloStatus, operator, mUnit, ebpId, sId, uJourneyId, oId] =
+    const [uId, sloStatus, operator, mUnit, ebpId, sId, uJourneyId, oId, slos] =
         await Promise.all([
             userId(document),
             getSloStatus(document),
@@ -137,9 +141,18 @@ const createSlo = async (document, inputResult) => {
             getSliName(document),
             getJourneyId(document),
             orgId(),
+            getSLOsHandler(),
         ])
 
-    await createSLOHandler({
+    const isSloExist =
+        slos &&
+        slos.find(
+            (item) =>
+                item?.name === document?.metadata?.name &&
+                item?.status === sloStatus
+        )
+
+    const sloReq = {
         orgId: inputResult && inputResult?.orgId ? inputResult?.orgId : oId,
         model: {
             userId: inputResult?.sli?.userId ? inputResult?.sli?.userId : uId,
@@ -152,7 +165,24 @@ const createSlo = async (document, inputResult) => {
             sliId: sId,
             userJourneyId: uJourneyId,
         },
-    })
+    }
+
+    if (isSloExist) {
+        logger.warn(
+            `SLO == ${document?.metadata?.name} == already exist. Updating ...`
+        )
+        return await updateSLOHandler({ ...sloReq, id: isSloExist?.id }).then(
+            (result) => ({
+                isUpdated: true,
+                data: result,
+            })
+        )
+    } else {
+        return await createSLOHandler(sloReq).then((result) => ({
+            isUpdated: false,
+            data: result,
+        }))
+    }
 }
 
 const sloProcessor = async (document, inputResult) => {
@@ -219,9 +249,9 @@ const sloProcessor = async (document, inputResult) => {
     try {
         await serviceSteps.run()
         logger.infoSuccess(
-            `RESOURCE WAS CREATED SUCCESSFULLY. RESPONSE: ${JSON.stringify(
-                response
-            )}`
+            `SUCCESSFULLY ${
+                response?.isUpdated ? 'UPDATED' : 'CREATED'
+            } SERVICE LEVEL OBJECTIVE: ${JSON.stringify(response?.data?.name)}`
         )
     } catch (err) {
         logger.infoError(
