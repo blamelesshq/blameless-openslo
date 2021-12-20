@@ -6,7 +6,8 @@ const validate = require('../lib')
 const help = require('../lib/utils/help')
 const { allowedTypes } = require('../lib/config/constants')
 const logger = require('../lib/utils/logger')
-const cli = require('../blameless-deploy/lib/cli')
+const deploy = require('../blameless-deploy/lib/cli')
+const ddelete = require('../blameless-delete/lib/cli')
 const setConfig = require('../lib/utils/setConfiguration')
 const isConfigSet = require('../lib/utils/checkConfig')
 const os = require('os')
@@ -45,7 +46,20 @@ if (isConfigSet()) {
         )
         .requiredOption('-f,--filePath <file_name>', 'path to yaml files')
         .action(() => {
-            cli(process.argv)
+            deploy(process.argv)
+        })
+
+    program
+        .command('delete')
+        .description('Delete resources from Blameless instance')
+        .requiredOption(
+            '-s, --source <type of source>',
+            'Please specify source: github or local',
+            allowedTypeOptions
+        )
+        .requiredOption('-f,--filePath <file_name>', 'path to yaml files')
+        .action(() => {
+            ddelete(process.argv)
         })
 
     if (
