@@ -2,6 +2,8 @@ const os = require('os')
 const fs = require('fs')
 const logger = require('./logger')
 const inquirer = require('inquirer')
+const envConfig = require('../config/env')
+const m2mAuth = require('../../blameless-deploy/handlers/shared/m2m')
 
 /**
  * Create global config directory
@@ -35,31 +37,15 @@ const merge = (obj = {}, defaults) => {
     return obj
 }
 
-const isBase64 = (str, options) => {
-    const notBase64 = /[^A-Z0-9+\/=]/i
-    const urlSafeBase64 = /^[A-Z0-9_\-]*$/i
-
-    const defaultBase64Options = {
-        urlSafe: false,
-    }
-
-    options = merge(options, defaultBase64Options)
-    const len = str.length
-
-    if (options.urlSafe) {
-        return urlSafeBase64.test(str)
-    }
-
-    if (len % 4 !== 0 || notBase64.test(str)) {
-        return false
-    }
-
-    const firstPaddingChar = str.indexOf('=')
-    return (
-        firstPaddingChar === -1 ||
-        firstPaddingChar === len - 1 ||
-        (firstPaddingChar === len - 2 && str[len - 1] === '=')
-    )
+/**
+ * Helper method to get audience from tenant domain
+ * @param {String} url - Url to get audience
+ */
+const getAudienceFromTenantDomain = (url) => {
+    const urlWithoutProtocol = url.replace(/^https?:\/\//, '')
+    return urlWithoutProtocol.endsWith('/')
+        ? urlWithoutProtocol.slice(0, -1)
+        : urlWithoutProtocol
 }
 
 /**
@@ -92,26 +78,13 @@ const createConfigFile = async (path) => {
         },
         {
             type: 'input',
-            name: 'BLAMELESS_TEMP_AUTH_TOKEN',
-            message: 'Please set BLAMELESS_TEMP_AUTH_TOKEN: ',
-            validate: (BLAMELESS_TEMP_AUTH_TOKEN) => {
-                const splitted =
-                    BLAMELESS_TEMP_AUTH_TOKEN &&
-                    BLAMELESS_TEMP_AUTH_TOKEN.split('.')
-
-                if (splitted.length > 3 || splitted.length < 2) {
-                    console.log(
-                        ' ✘ Please enter valid BLAMELESS_TEMP_AUTH_TOKEN'
-                    )
-                    return false
-                }
-
-                return splitted.reduce(
-                    (acc, currElem) =>
-                        acc && isBase64(currElem, { urlSafe: true }),
-                    true
-                )
-            },
+            name: 'BLAMELESS_OAUTH_CLIENT_SECRET',
+            message: 'Please set BLAMELESS_OAUTH_CLIENT_SECRET: ',
+        },
+        {
+            type: 'input',
+            name: 'BLAMELESS_OAUTH_CLIENT_ID',
+            message: 'Please set BLAMELESS_OAUTH_CLIENT_ID: ',
         },
         {
             type: 'input',
@@ -146,6 +119,26 @@ const createConfigFile = async (path) => {
 
     const answer = await inquirer.prompt(requiredConfiguration)
     const rootConfigFolder = createDirectory(path)
+    let answerWithAuth = {
+        ...answer,
+        BLAMELESS_OAUTH_AUDIENCE: getAudienceFromTenantDomain(
+            answer.BLAMELESS_TENANT_DOMAIN
+        ),
+    }
+
+    const authRequest = {
+        client_id: answerWithAuth.BLAMELESS_OAUTH_CLIENT_ID,
+        client_secret: answerWithAuth.BLAMELESS_OAUTH_CLIENT_SECRET,
+        audience: answerWithAuth.BLAMELESS_OAUTH_AUDIENCE,
+        grant_type: envConfig.grandType
+    }
+
+    const authToken =  await m2mAuth(authRequest)
+
+    answerWithAuth = {
+        ...answerWithAuth,
+        BLAMELESS_TEMP_AUTH_TOKEN: `Bearer ${authToken}`,
+    }
 
     if (!rootConfigFolder) {
         createDirectory(path)
@@ -155,16 +148,22 @@ const createConfigFile = async (path) => {
             os.platform() === 'darwin'
                 ? `${path}//config.json`
                 : `${path}\\config.json`
-        fs.writeFile(configPath, JSON.stringify(answer, null, 2), (err) => {
-            if (err) {
-                logger.error(`An error occurred while adding config: ${err}`)
-            } else {
-                logger.success(`Config has been created`)
-                logger.success(
-                    'Please type blameless-slo and choose command in your terminal'
-                )
+        fs.writeFile(
+            configPath,
+            JSON.stringify(answerWithAuth, null, 2),
+            (err) => {
+                if (err) {
+                    logger.error(
+                        `An error occurred while adding config: ${err}`
+                    )
+                } else {
+                    logger.success(`Config has been created`)
+                    logger.success(
+                        'Please type blameless-slo and choose command in your terminal'
+                    )
+                }
             }
-        })
+        )
     }
 }
 

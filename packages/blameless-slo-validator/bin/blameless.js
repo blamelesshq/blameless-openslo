@@ -74,9 +74,10 @@ if (isConfigSet()) {
     program.parse(process.argv)
 } else {
     logger.error(
-        `Config is missing. Please set correct config values. 
+        `Config is missing. Please set correct config values.
          If you enter an incorrect configuration value by mistake you can change
          it to the following location ${os.homedir()}`
     )
+
     setConfig()
 }

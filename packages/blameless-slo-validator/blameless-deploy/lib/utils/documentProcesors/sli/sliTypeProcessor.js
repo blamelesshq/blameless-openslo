@@ -78,20 +78,24 @@ const dataSourceId = async (document) => {
 
 const gcpSettings = async (document) => {
     const settings = await getGcpClusterSettingsHandler()
-    const [isSettingExist] =
-        settings &&
-        settings?.response &&
-        settings?.response?.gcp &&
-        Object.values(settings?.response?.gcp).filter(
-            (item) => item?.name === document?.spec?.metricSource?.name
+
+    const gcpSetting = Object.entries(settings?.response?.gcp)
+
+    if (gcpSetting && gcpSetting.length > 0) {
+        const result = gcpSetting.find(
+            (item) =>
+                item[1].name &&
+                item[1].name.toLowerCase() &&
+                item[1].name.toLowerCase().trim() ===
+                    document?.spec?.gcpSettingsName?.toLowerCase()?.trim()
         )
-
-    const settingsId = Object.keys(settings?.response?.gcp).find(
-        (key) => settings?.response?.gcp[key] === isSettingExist
-    )
-
-    if (isSettingExist && settingsId) {
-        return settingsId
+        if (result) {
+            return result && result[0]
+        } else {
+            throw new Error(
+                `Unable to get gcp settings. Please make sure that gcp settings "${document?.spec?.gcpSettingsName?.toLowerCase()}" already exist`
+            )
+        }
     }
 }
 
@@ -186,69 +190,70 @@ const createSli = async (document, inputResult) => {
 }
 
 const sliTypeProcessor = async (document, inputResult) => {
-    let response
-    const serviceSteps = new Listr([
-        {
-            title: 'Creating Sli ...',
-            task: async () => {
-                return new Listr(
-                    [
-                        {
-                            title: 'Getting orgId ...',
-                            task: async () => await orgId(),
-                        },
-                        {
-                            title: 'Getting Sli name ...',
-                            task: () => getSliName(document),
-                        },
-                        {
-                            title: 'Getting Sli description ...',
-                            task: () => getSliDescription(document),
-                        },
-                        {
-                            title: 'Getting Sli Data Source ...',
-                            task: () => {
-                                getSliDataSources(document).catch((error) => {
-                                    throw new Error(error)
-                                })
-                            },
-                        },
-                        {
-                            title: 'Getting Sli Type ...',
-                            task: async () => {
-                                await sliTypeId(document).catch((error) => {
-                                    throw new Error(error)
-                                })
-                            },
-                        },
-                        {
-                            title: 'Creating Sli ...',
-                            task: async () =>
-                                await createSli(document, inputResult)
-                                    .then((result) => {
-                                        response = result
-                                    })
-                                    .catch((error) => {
-                                        throw new Error(error)
-                                    }),
-                        },
-                    ],
-                    { concurrent: true, exitOnError: false }
-                )
-            },
-        },
-    ])
-    try {
-        await serviceSteps.run()
-        logger.infoSuccess(
-            `SUCCESSFULLY ${
-                response?.isUpdated ? 'UPDATED' : 'CREATED'
-            } SERVICE LEVEL INDICATOR: ${JSON.stringify(response?.data?.name)}`
-        )
-    } catch (err) {
-        logger.infoError('ERRORS:', err?.errors?.toString().split(','))
-    }
-    return response ? response : false
+    await gcpSettings(document)
+    // let response
+    // const serviceSteps = new Listr([
+    //     {
+    //         title: 'Creating Sli ...',
+    //         task: async () => {
+    //             return new Listr(
+    //                 [
+    //                     {
+    //                         title: 'Getting orgId ...',
+    //                         task: async () => await orgId(),
+    //                     },
+    //                     {
+    //                         title: 'Getting Sli name ...',
+    //                         task: () => getSliName(document),
+    //                     },
+    //                     {
+    //                         title: 'Getting Sli description ...',
+    //                         task: () => getSliDescription(document),
+    //                     },
+    //                     {
+    //                         title: 'Getting Sli Data Source ...',
+    //                         task: () => {
+    //                             getSliDataSources(document).catch((error) => {
+    //                                 throw new Error(error)
+    //                             })
+    //                         },
+    //                     },
+    //                     {
+    //                         title: 'Getting Sli Type ...',
+    //                         task: async () => {
+    //                             await sliTypeId(document).catch((error) => {
+    //                                 throw new Error(error)
+    //                             })
+    //                         },
+    //                     },
+    //                     {
+    //                         title: 'Creating Sli ...',
+    //                         task: async () =>
+    //                             await createSli(document, inputResult)
+    //                                 .then((result) => {
+    //                                     response = result
+    //                                 })
+    //                                 .catch((error) => {
+    //                                     throw new Error(error)
+    //                                 }),
+    //                     },
+    //                 ],
+    //                 { concurrent: true, exitOnError: false }
+    //             )
+    //         },
+    //     },
+    // ])
+    // try {
+    //     await serviceSteps.run()
+    //     logger.infoSuccess(
+    //         `SUCCESSFULLY ${
+    //             response?.isUpdated ? 'UPDATED' : 'CREATED'
+    //         } SERVICE LEVEL INDICATOR: ${JSON.stringify(response?.data?.name)}`
+    //     )
+    // } catch (err) {
+    //     logger.infoError('ERRORS:', err?.errors?.toString().split(','))
+    // }
+    // return response ? response : false
 }
 
 module.exports = sliTypeProcessor
