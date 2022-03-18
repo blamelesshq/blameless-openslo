@@ -23,13 +23,14 @@ const envConfig = {
     clientId: process.env.BLAMELESS_OAUTH_CLIENT_ID,
     clientSecret: process.env.BLAMELESS_OAUTH_CLIENT_SECRET,
     audience: process.env.BLAMELESS_OAUTH_AUDIENCE,
-    grandType: process.env.BLAMELESS_OAUTH_GRAND_TYPE,
+    grandType: "client_credentials",
     getOrgIdBase: `${BLAMELESS_TENANT_DOMAIN}/identity/tenant`,
     userIdBase: `${BLAMELESS_TENANT_DOMAIN}/identity/user/authName/`,
     incidentSeverities: `${BLAMELESS_TENANT_DOMAIN}/incident-severities`,
     tempAuthToken: config?.BLAMELESS_TEMP_AUTH_TOKEN,
     settings: `${BLAMELESS_TENANT_DOMAIN}prometheus/settings`,
     blamelessTenantBaseUrl: `${BLAMELESS_TENANT_DOMAIN}/services/SLOServiceCrud/`,
+    m2m: `https://blamelesshq.auth0.com/oauth/token`,
 }
 
 module.exports = envConfig
