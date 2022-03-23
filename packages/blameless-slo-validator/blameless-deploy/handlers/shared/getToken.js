@@ -1,7 +1,22 @@
-const envConfig = require('../../../lib/config/env')
+var authToken;
+// const setAuthToken = (token) => {
+//     console.log(token)
+//     authToken = token
+// }
 
-const getAuthToken = () => {
-    return envConfig.tempAuthToken
-}
+// const getAuthToken = () => {
+//     console.log
+//     return authToken;
+// }
 
-module.exports = getAuthToken;
+exports.getAuthToken = function () {
+    console.log({
+        authToken: authToken
+    })
+    return {
+        authToken: authToken
+    };
+};
+exports.setAuthToken = function (token) {
+    authToken = token;
+};

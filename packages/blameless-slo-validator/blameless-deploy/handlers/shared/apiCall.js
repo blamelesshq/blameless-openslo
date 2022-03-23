@@ -1,16 +1,15 @@
 const axios = require('axios').default
 const envConfig = require('../../../lib/config/env')
-const getAuthToken = require('./getToken')
+const tokenUtils = require('./getToken')
 const logger = require('../../../lib/utils/logger')
+const authTokenProvider = require('../../../lib/utils/authTokenProvider')
 
 const apiCallHandler = axios.create({
     baseURL: envConfig.blamelessTenantBaseUrl,
-    headers: {
-        authorization: getAuthToken(),
-    },
 })
 
 apiCallHandler.interceptors.request.use((req) => {
+    req.headers.Authorization = authTokenProvider.authToken
     return req
 })
 

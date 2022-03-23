@@ -1,0 +1,11 @@
+apiVersion: blameless/v1alpha
+kind: Service
+
+metadata:
+  name: "HammadService1"  # unique name of the Service (group of SLIs)
+  displayName: service.yml found in the blameless-openslo repo   # optional
+
+spec:
+  description: "source: http://blamelesshq/blameless-slo-sample/sample1/service.yaml"
+  # notes: string                 # optional
+  owner: hammad@blameless.com  # name of a user in your Blmameless account (e.g. user email)
