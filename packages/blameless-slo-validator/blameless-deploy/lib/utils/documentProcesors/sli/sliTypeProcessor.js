@@ -190,7 +190,7 @@ const createSli = async (document, inputResult) => {
 }
 
 const sliTypeProcessor = async (document, inputResult) => {
-    await gcpSettings(document)
+    // await gcpSettings(document)
     let response
     const serviceSteps = new Listr([
         {
