@@ -22,7 +22,9 @@ jobs:
               run: npm ci
             - name: Run Tests
               run: npm run test
-            - name: Install dependencies & Publish Package
+            - name: Update Version
+              run: npm version $(node -e "console.log(require('./package.json').version)")-rc-$GITHUB_RUN_ID
+            - name: Publish Package
               run: |
                 echo "//npm.pkg.github.com/:_authToken=$NODE_AUTH_TOKEN" > ~/.npmrc
                 npm publish
