@@ -19,9 +19,9 @@ jobs:
                   registry-url: https://npm.pkg.github.com/
                   scope: '@blamelesshq'
             - name: Install dependencie
-              run: npm install
+              run: npm ci
             - name: Run Tests
-              run: npm install
+              run: npm run test
             - name: Install dependencies & Publish Package
               run: |
                 echo "//npm.pkg.github.com/:_authToken=$NODE_AUTH_TOKEN" > ~/.npmrc
