@@ -11,17 +11,17 @@ const ddelete = require('../blameless-delete/lib/cli')
 const envConfig = require('../lib/config/env')
 
 const isEnvSet = require('../lib/utils/checkEnv')
-// const setConfig = require('../lib/utils/setConfiguration')
-// const isConfigSet = require('../lib/utils/checkConfig')
-const os = require('os')
 const m2mAuth = require('../blameless-deploy/handlers/shared/m2m')
-const tokenUtils = require('../blameless-delete/handlers/shared/getToken')
 const authTokenProvider = require('../lib/utils/authTokenProvider')
 
 const allowedTypeOptions = (value) => {
     if (value && !allowedTypes.includes(value)) {
         logger.warn('Please specify type: Allowed options are: github | local')
         return
+    }
+
+    if (value == 'github') {
+        logger.warn('The value "github" has been deprecated')
     }
 
     return value
@@ -47,12 +47,13 @@ if (isEnvSet()) {
             .version(packageVersion)
             .command('validate')
             .description('Validate YAML files')
-            .requiredOption(
+            .requiredOption('-f,--filePath <file_name>', 'path to yaml files')
+            .option(
                 '-s, --source <type of source>',
                 'Please specify source: github or local',
-                allowedTypeOptions
+                allowedTypeOptions,
+                'local'
             )
-            .requiredOption('-f,--filePath <file_name>', 'path to yaml files')
             .action((options) => {
                 validate(options?.filePath, options?.source)
             })
@@ -60,12 +61,13 @@ if (isEnvSet()) {
         program
             .command('deploy')
             .description('Deploy resource to Blameless')
-            .requiredOption(
-                '-s, --source <type of source>',
-                'Please specify source: github or local',
-                allowedTypeOptions
-            )
             .requiredOption('-f,--filePath <file_name>', 'path to yaml files')
+            .option(
+                '-s, --source <type of source>',
+                'Please specify source: github or local.',
+                allowedTypeOptions,
+                'local'
+            )
             .action(() => {
                 deploy(process.argv)
             })
@@ -73,12 +75,13 @@ if (isEnvSet()) {
         program
             .command('delete')
             .description('Delete resources from Blameless instance')
-            .requiredOption(
+            .requiredOption('-f,--filePath <file_name>', 'path to yaml files')
+            .option(
                 '-s, --source <type of source>',
                 'Please specify source: github or local',
-                allowedTypeOptions
+                allowedTypeOptions,
+                'local'
             )
-            .requiredOption('-f,--filePath <file_name>', 'path to yaml files')
             .action(() => {
                 ddelete(process.argv)
             })
