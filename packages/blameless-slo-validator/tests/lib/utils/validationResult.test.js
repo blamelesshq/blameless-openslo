@@ -2,7 +2,7 @@ const sloSchema = require('../../../lib/schema/sloSchema');
 const validationResult = require('../../../lib/utils/validationResult');
 
 describe('Validation Result', () => {
-    const validValueMetrics = [ 's', 'ms', 'rps', 'rpm', 'gb', 'mb' ];
+    const validValueMetrics = [ 's', 'ms', 'rps', 'rpm', 'GB', '%' ];
     it.each(validValueMetrics)('slo allows valid valueMetric "%s"', (valueMetric) => {
         // Assemble
         const sliDocument = {
@@ -32,7 +32,7 @@ describe('Validation Result', () => {
         expect(result.error).toBeFalsy();
     });
 
-    const invalidValueMetrics = [ undefined, null, '', ' ', 'g', 'm' ];
+    const invalidValueMetrics = [ undefined, null, '', ' ', 'gb', 'm' ];
     it.each(invalidValueMetrics)('slo fails invalid valueMetric "%s"', (valueMetric) => {
         // Assemble
         const sliDocument = {

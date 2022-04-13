@@ -22,7 +22,7 @@ const sloSchema = Joi.object().keys({
             sliName: Joi.string().required(),
             target: Joi.number().required().min(1).less(100),
             op: Joi.string().valid('lte', 'gte', 'lt', 'gt').required(),
-            valueMetric: Joi.string().valid('ms', 's', 'gb', 'mb', 'rps', 'rpm').required(),
+            valueMetric: Joi.string().valid('ms', 's', 'GB', '%', 'rps', 'rpm').required(),
             value: Joi.number().greater(0).required(),
             errorBudgetPolicyName: Joi.string().optional(),
         })
