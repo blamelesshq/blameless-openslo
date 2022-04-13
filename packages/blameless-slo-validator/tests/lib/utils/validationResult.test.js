@@ -61,5 +61,4 @@ describe('Validation Result', () => {
         // Assert
         expect(result.error).toBeTruthy();
     });
-
-})
+});
