@@ -30,7 +30,7 @@ const sliId = async (document) => {
 }
 
 const slosBySliId = async (document) => {
-    const [id, oId] = await Promise.all([sliId(), orgId()])
+    const [id, oId] = await Promise.all([sliId(document), orgId()])
 
     const req = {
         orgId: oId,

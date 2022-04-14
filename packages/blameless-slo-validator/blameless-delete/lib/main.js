@@ -1,12 +1,8 @@
 const logger = require('../../lib/utils/logger')
 
 const documentProcesorByType = require('./utils/documentProcessorByType')
-// const { listOfMinimalRequiredDocuments } = require('../lib/config/constants')
-const waterfallSloCreateHandler = require('./utils/waterfallSloCreateHandler')
+const waterfallSloDeleteHandler = require('./utils/waterfallSloDeleteHandler')
 
-// const hasMinimumRequirements = (docs) => {
-//     return listOfMinimalRequiredDocuments.every((property) => property in docs)
-// }
 
 const _objSize = (obj) => {
     let size = 0
@@ -51,8 +47,7 @@ const createResources = async (options) => {
             options?.validDocuments &&
             _objSize(options?.validDocuments) > 1)
     ) {
-        waterfallSloCreateHandler(options?.validDocuments)
-        // waterfallErrorBudgetPolicyCreateHandler(options?.validDocuments)
+        waterfallSloDeleteHandler(options?.validDocuments)
     }
 }
 
