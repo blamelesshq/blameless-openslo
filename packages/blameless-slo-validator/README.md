@@ -1,4 +1,4 @@
-## Blameless SLO CLI
+# Blameless SLO CLI
 
 The Blameless SLO CLI supports the following commands to manage your [SLO resources](#the-blameless-slo-data-model) in your own Blameless instance.
 ```unix
@@ -18,14 +18,14 @@ $ blameless-slo delete
 * Check the [Naming resources](#naming-resources) section to make sure you are appropriately naming your resources before you create or update SLO resources in SLO Manager on your Blameless instance.
 
 
-### Install the CLI
+## Install the CLI
 
 The Blameless SLO CLI is publicly available as an [NPM package](https://www.npmjs.com/package/@blamelesshq/blameless-slo) which can be installed as followed:
 ```unix
 $ npm install -g @blamelesshq/blameless-slo
 ```
 
-### Initial setup
+## Initial setup
 
 > Contact Blameless Customer Success ([cs@blameless.io](mailto:cs@blameless.io)) to obtain your `Client ID` and `Client Secret` which is associated to your Blameless instance: <instance_name>.blameles.io
 
@@ -50,7 +50,7 @@ $ blameless-slo
 ```
 
 
-### Validate
+## Validate
 
 The `validate` command is used to validate `.yaml` specs before deploying the defined SLO resources in Blameless SLO Manager.
 
@@ -69,7 +69,7 @@ blameless-slo validate -f sample1
 
 
 
-#### Validation output
+### Validation output
 
 There are tree types of validations messages: 
 
@@ -104,7 +104,7 @@ blameless-slo validate -f ./specs/sli.yaml
 
 
 
-### Deploy
+## Deploy
 
 The `deploy` command is used to create/update SLO resources in Blameless. When you execute that command, it first validates the specified yaml files, and if everything is okay, it will proceed further by deploying those resources.
 
@@ -121,7 +121,7 @@ Options:
    * **`<path_to_yaml>`**: Path to your .yaml file or folder containing multiple .yaml files.
 
 
-### Delete
+## Delete
 
 The `delete` command is used to delete SLO resources from Blameless SLO Manager. When you execute that command, it first validates the specified yaml files, and if everything is okay, it will proceed further by deleting those resources.
 
@@ -132,3 +132,8 @@ The `delete` command is used to delete SLO resources from Blameless SLO Manager.
 Options:
 
    * **`<path_to_yaml>`**: Path to your .yaml file or folder containing multiple .yaml files.
+
+
+## Sample YAML Files
+
+To view sample files for each type of resource check out our [sample repo](https://github.com/blamelesshq/blameless-slo-samples).
