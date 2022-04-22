@@ -1,5 +1,5 @@
-const sloSchema = require('../../../lib/schema/sloSchema');
-const validationResult = require('../../../lib/utils/validationResult');
+const sloSchema = require('../../../src/lib/schema/sloSchema');
+const validationResult = require('../../../src/lib/utils/validationResult');
 
 describe('Validation Result', () => {
     const validValueMetrics = [ 's', 'ms', 'rps', 'rpm', 'GB', '%' ];

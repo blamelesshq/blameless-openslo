@@ -3,14 +3,14 @@ name: Blameless SLO Validator
 on:
   push:
     paths:
-      - 'packages/blameless-slo-validator/**'
+      - '**'
 
 jobs:
     publish-gpr:
         runs-on: ubuntu-latest
         defaults:
             run:
-                working-directory: ./packages/blameless-slo-validator
+                working-directory: ./
         steps:
             - uses: actions/checkout@v2
             - uses: actions/setup-node@v1
