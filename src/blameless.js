@@ -2,17 +2,17 @@
 
 const { program } = require('commander')
 const packageVersion = require('../package.json').version
-const validate = require('../lib')
-const help = require('../lib/utils/help')
-const { allowedTypes } = require('../lib/config/constants')
-const logger = require('../lib/utils/logger')
-const deploy = require('../blameless-deploy/lib/cli')
-const ddelete = require('../blameless-delete/lib/cli')
-const envConfig = require('../lib/config/env')
+const validate = require('./lib')
+const help = require('./lib/utils/help')
+const { allowedTypes } = require('./lib/config/constants')
+const logger = require('./lib/utils/logger')
+const deploy = require('./blameless-deploy/lib/cli')
+const ddelete = require('./blameless-delete/lib/cli')
+const envConfig = require('./lib/config/env')
 
-const isEnvSet = require('../lib/utils/checkEnv')
-const m2mAuth = require('../blameless-deploy/handlers/shared/m2m')
-const authTokenProvider = require('../lib/utils/authTokenProvider')
+const isEnvSet = require('./lib/utils/checkEnv')
+const m2mAuth = require('./blameless-deploy/handlers/shared/m2m')
+const authTokenProvider = require('./lib/utils/authTokenProvider')
 
 const allowedTypeOptions = (value) => {
     if (value && !allowedTypes.includes(value)) {
@@ -106,7 +106,6 @@ if (isEnvSet()) {
          BLAMELESS_OAUTH_AUDIENCE
          BLAMELESS_TENANT_DOMAIN`
     )
-    // setConfig()
 }
 
 

@@ -3,14 +3,14 @@ name: Blameless SLO Validator
 on:
   push:
     paths:
-      - 'packages/blameless-slo-validator/**'
+      - '**'
 
 jobs:
     publish-gpr:
         runs-on: ubuntu-latest
         defaults:
             run:
-                working-directory: ./packages/blameless-slo-validator
+                working-directory: ./
         steps:
             - uses: actions/checkout@v2
             - uses: actions/setup-node@v1
@@ -18,12 +18,12 @@ jobs:
                   node-version: 14
                   registry-url: https://npm.pkg.github.com/
                   scope: '@blamelesshq'
-            - name: Install dependencie
+            - name: Install dependencies
               run: npm ci
             - name: Run Tests
               run: npm run test
             - name: Update Version
-              run: npm version $(node -e "console.log(require('./package.json').version)")-rc-$GITHUB_RUN_NUMBER
+              run: npm version $(node -e "console.log(require('./package.json').version)")-rc-$GITHUB_RUN_NUMBER --git-tag-version false
             - name: Publish Package
               run: |
                 echo "//npm.pkg.github.com/:_authToken=$NODE_AUTH_TOKEN" > ~/.npmrc
