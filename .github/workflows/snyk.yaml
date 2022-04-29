@@ -1,5 +1,9 @@
 name: Snyk-workflow Repository Scan
-on: push
+on:
+   push:
+     branches:
+       - main
+       - master  
 jobs:
   Remote-Snyk-Scanning:
     runs-on: ubuntu-latest
