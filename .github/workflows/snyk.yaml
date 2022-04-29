@@ -9,7 +9,7 @@ jobs:
         with:
           repository: blamelesshq/snyk-workflows
           token: ${{ secrets.SNYK_BOT_PAT_TOKEN }}
-          event-type: snyk-node
+          event-type: snyk-node-code-only
           client-payload: |
             {
               "sha": "${{ github.sha}}",
