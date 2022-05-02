@@ -1,0 +1,22 @@
+name: Snyk-workflow Repository Scan
+on:
+   push:
+     branches:
+       - main
+       - master  
+jobs:
+  Remote-Snyk-Scanning:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          repository: blamelesshq/snyk-workflows
+          token: ${{ secrets.SNYK_BOT_PAT_TOKEN }}
+          event-type: snyk-node-code-only
+          client-payload: |
+            {
+              "sha": "${{ github.sha}}",
+              "repository": "${{ github.repository }}",
+              "snyk-org": "${{ secrets.SNYK_ORG }}"
+            }
