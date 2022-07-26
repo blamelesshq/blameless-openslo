@@ -1,3 +1,3 @@
-const allowedTypes = ['github', 'local']
+const allowedTypes = ['github', 'local'];
 
-module.exports = { allowedTypes }
+module.exports = allowedTypes;

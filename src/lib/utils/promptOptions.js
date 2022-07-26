@@ -1,4 +1,4 @@
-const validate = require('../../../lib')
+const validate = require('../../lib')
 
 const suggestOptions = async (options) => {
     const result = await validate(options?.filePath, options?.source)
