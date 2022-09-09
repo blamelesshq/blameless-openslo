@@ -2,7 +2,7 @@ const Listr = require('listr')
 const logger = require('../../../../../lib/utils/logger')
 
 const getOrgId = require('../../../../handlers/shared/getOrgId')
-const getAllSLIs = require('../../../../handlers/slis/getAllSLIsHandler')
+const GetSliByName = require('../../../../handlers/slis/GetSliByNameHandler')
 const getSlosBySliIdHandler = require('../../../../handlers/slis/getSlosBySliIdHandler')
 const deleteSliHandler = require('../../../../handlers/slis/deleteSliHandler')
 
@@ -12,21 +12,13 @@ const orgId = async () => {
 }
 
 const sliId = async (document) => {
-    const [slis] = await Promise.all([getAllSLIs()])
+    const [sli] = await Promise.all([GetSliByName(document?.metadata?.name)])
 
-    const result =
-        slis &&
-        slis.find(
-            (sli) =>
-                sli?.name?.toLowerCase() ===
-                document?.metadata?.name?.toLowerCase()
-        )?.id
-
-    if (!result) {
+    if (!sli) {
         throw `SLI was not found. Please make sure that SLI exist!`
     }
 
-    return result
+    return sli.id
 }
 
 const slosBySliId = async (document) => {
