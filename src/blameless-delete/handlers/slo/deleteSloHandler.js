@@ -10,7 +10,7 @@ const deleteSlosHandler = async (req) => {
 
         const { status, data } = result
 
-        return data?.slos
+        return data?.slo
     } catch (error) {
         const errorMessage = `Unable to Delete SLO. [${error?.response?.data?.error}]: ${error?.response?.data?.message}`
         throw errorMessage

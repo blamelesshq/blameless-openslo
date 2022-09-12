@@ -10,7 +10,7 @@ const deleteUserJourneyHandler = async (req) => {
 
         const { status, data } = result
 
-        return data?.slos
+        return data?.userJourney
     } catch (error) {
         const errorMessage = `Unable to Delete User Journey: ${error}`
         throw errorMessage

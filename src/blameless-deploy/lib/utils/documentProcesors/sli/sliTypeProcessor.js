@@ -7,7 +7,7 @@ const getSliDataSources = require('../../../../handlers/slis/getSliDataSources')
 const getUserId = require('../../../../handlers/shared/getUserId')
 const getServices = require('../../../../handlers/service/getServicesHandler')
 const createSliHandler = require('../../../../handlers/slis/createSliHandler')
-const GetSliByName = require('../../../../handlers/slis/GetSliByNameHandler')
+const getSliByNameHandler = require('../../../../handlers/slis/getSliByNameHandler')
 const updateSliHandler = require('../../../../handlers/slis/updateSliHandler')
 const getGcpClusterSettingsHandler = require('../../../../handlers/slis/getGcpClusterSettingsHandler')
 
@@ -131,7 +131,7 @@ const createSli = async (document, inputResult) => {
 
     const [uId, sli, servId, sTypeId, sourceId, oId] = await Promise.all([
         userId(document),
-        GetSliByName(sliName),
+        getSliByNameHandler(sliName),
         serviceId(document),
         sliTypeId(document),
         dataSourceId(document),

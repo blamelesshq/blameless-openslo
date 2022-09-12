@@ -2,7 +2,7 @@ const Listr = require('listr')
 const logger = require('../../../../../lib/utils/logger')
 
 const getOrgId = require('../../../../handlers/shared/getOrgId')
-const GetSliByName = require('../../../../handlers/slis/GetSliByNameHandler')
+const getSliByNameHandler = require('../../../../handlers/slis/getSliByNameHandler')
 const getSlosBySliIdHandler = require('../../../../handlers/slis/getSlosBySliIdHandler')
 const deleteSliHandler = require('../../../../handlers/slis/deleteSliHandler')
 
@@ -12,7 +12,7 @@ const orgId = async () => {
 }
 
 const sliId = async (document) => {
-    const [sli] = await Promise.all([GetSliByName(document?.metadata?.name)])
+    const [sli] = await Promise.all([getSliByNameHandler(document?.metadata?.name)])
 
     if (!sli) {
         throw `SLI was not found. Please make sure that SLI exist!`
@@ -94,9 +94,7 @@ const sliTypeProcessor = async (document, inputResult) => {
     try {
         await serviceSteps.run()
         logger.infoSuccess(
-            `SUCCESSFULLY DELETED SERVICE LEVEL INDICATOR: ${JSON.stringify(
-                response?.data?.sli?.name
-            )}`
+            `SUCCESSFULLY DELETED SERVICE LEVEL INDICATOR: ${response?.name}`
         )
     } catch (err) {
         logger.infoError(

@@ -1,7 +1,7 @@
 const envConfig = require('../../../lib/config/env')
 const apiCallHandler = require('../shared/apiCall')
 
-const GetSliByName = async (sliName) => {
+const getSliByNameHandler = async (sliName) => {
     try {
         const result = await apiCallHandler.post(
             `${envConfig.blamelessTenantBaseSloCustomApiUrl}/GetSliByName`, 
@@ -19,4 +19,4 @@ const GetSliByName = async (sliName) => {
     }
 }
 
-module.exports = GetSliByName
+module.exports = getSliByNameHandler

@@ -3,6 +3,7 @@ const parseArgsIntoOpt = require('../../lib/utils/getArgsOptions')
 const logger = require('../../lib/utils/logger')
 const objSize = require('../../lib/utils/objSize')
 
+const documentProcesorByType = require('./utils/documentProcessorByType')
 const waterfallSloCreateHandler = require('./utils/waterfallSloCreateHandler')
 
 const createResources = async (options) => {
