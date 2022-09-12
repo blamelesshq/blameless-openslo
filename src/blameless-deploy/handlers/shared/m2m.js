@@ -11,7 +11,7 @@ const m2mAuth = async (body) => {
 
         return data?.access_token
     } catch (error) {
-        const errorMessage = `Unable Get access token: [${error?.response?.data?.error}]: ${error?.response?.data?.message}`
+        const errorMessage = `Unable Get access token: [${error?.response?.data?.error}]: ${error?.response?.data?.error_description}`
         throw errorMessage
     }
 }
