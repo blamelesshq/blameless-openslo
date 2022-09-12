@@ -3,7 +3,7 @@ const logger = require('../../../../../lib/utils/logger')
 
 const getOrgId = require('../../../../handlers/shared/getOrgId')
 const getUserId = require('../../../../handlers/shared/getUserId')
-const GetSliByName = require('../../../../handlers/slis/GetSliByNameHandler')
+const getSliByNameHandler = require('../../../../handlers/slis/getSliByNameHandler')
 const getUserJourneysHandler = require('../../../../handlers/userJourney/getUserJourneysHandler')
 const createSLOHandler = require('../../../../handlers/slo/createSLOHandler')
 const sloStatusesHandler = require('../../../../handlers/slo/getSLOStatusesHandler')
@@ -46,7 +46,7 @@ const getSloObjectives = (document) => {
 }
 
 const getSliName = async (document) => {
-    const sli = await GetSliByName(document?.spec?.sliName)
+    const sli = await getSliByNameHandler(document?.spec?.sliName)
 
     if (!sli?.id) {
         throw new Error(
