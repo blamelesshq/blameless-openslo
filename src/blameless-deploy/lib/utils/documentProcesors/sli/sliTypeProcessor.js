@@ -7,7 +7,7 @@ const getSliDataSources = require('../../../../handlers/slis/getSliDataSources')
 const getUserId = require('../../../../handlers/shared/getUserId')
 const getServices = require('../../../../handlers/service/getServicesHandler')
 const createSliHandler = require('../../../../handlers/slis/createSliHandler')
-const getAllSLIs = require('../../../../handlers/slis/getAllSLIsHandler')
+const getSliByNameHandler = require('../../../../handlers/slis/getSliByNameHandler')
 const updateSliHandler = require('../../../../handlers/slis/updateSliHandler')
 const getGcpClusterSettingsHandler = require('../../../../handlers/slis/getGcpClusterSettingsHandler')
 
@@ -127,24 +127,16 @@ const userId = async (document) => {
 
 const createSli = async (document, inputResult) => {
     const documentType = document?.spec?.sliType.toLowerCase()
+    const sliName = document?.metadata?.name
 
-    const [uId, slis, servId, sTypeId, sourceId, oId] = await Promise.all([
+    const [uId, sli, servId, sTypeId, sourceId, oId] = await Promise.all([
         userId(document),
-        getAllSLIs(),
+        getSliByNameHandler(sliName),
         serviceId(document),
         sliTypeId(document),
         dataSourceId(document),
         orgId(),
     ])
-
-    const existingSliId =
-        slis &&
-        slis.find(
-            (item) =>
-                item?.name &&
-                item?.name?.toLowerCase() ===
-                    document?.metadata?.name?.toLowerCase()
-        )?.id
 
     const sliRequest = {
         orgId: inputResult && inputResult?.orgId ? inputResult?.orgId : oId,
@@ -173,10 +165,10 @@ const createSli = async (document, inputResult) => {
         },
     }
 
-    if (existingSliId) {
+    if (sli?.id) {
         return await updateSliHandler({
             ...sliRequest,
-            id: existingSliId,
+            id: sli.id,
         }).then((result) => ({
             isUpdated: true,
             data: result,
@@ -231,7 +223,10 @@ const sliTypeProcessor = async (document, inputResult) => {
                             task: async () =>
                                 await createSli(document, inputResult)
                                     .then((result) => {
-                                        response = result
+                                        response = {
+                                            isUpdated: result.isUpdated,
+                                            data: result?.data?.sli
+                                        }
                                     })
                                     .catch((error) => {
                                         throw new Error(error)

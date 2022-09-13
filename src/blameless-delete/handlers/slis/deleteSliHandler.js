@@ -10,7 +10,7 @@ const deleteSliHandler = async (req) => {
 
         const { status, data } = result
 
-        return data?.slos
+        return data?.sli
     } catch (error) {
         const errorMessage = `Unable to Delete SLI. Error: ${error}`
         throw errorMessage

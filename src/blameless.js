@@ -38,8 +38,14 @@ if (isEnvSet()) {
             grant_type: envConfig.grandType
         }
 
-        // Get a machine token to use for requests
-        const authToken = await m2mAuth(authRequest)
+        let authToken = ""
+        try {
+            // Get a machine token to use for requests
+            authToken = await m2mAuth(authRequest);
+        } catch (ex) {
+            logger.error(ex);
+            return;
+        }
 
         authTokenProvider.authToken = `Bearer ${authToken}`;
 

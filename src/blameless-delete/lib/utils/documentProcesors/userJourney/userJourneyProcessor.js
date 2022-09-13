@@ -110,7 +110,7 @@ const userJourneyProcessor = async (document, inputResult) => {
     try {
         await userJourneySteps.run()
         logger.infoSuccess(
-            `SUCCESSFULLY DELETED USER JOURNEY: ${JSON.stringify(response?.name)}`
+            `SUCCESSFULLY DELETED USER JOURNEY: ${response?.name}`
         )
     } catch (err) {
         logger.infoError(

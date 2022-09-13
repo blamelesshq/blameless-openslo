@@ -30,6 +30,7 @@ const envConfig = {
     tempAuthToken: config?.BLAMELESS_TEMP_AUTH_TOKEN,
     settings: `${BLAMELESS_TENANT_DOMAIN}prometheus/settings`,
     blamelessTenantBaseUrl: `${BLAMELESS_TENANT_DOMAIN}/services/SLOServiceCrud/`,
+    blamelessTenantBaseSloCustomApiUrl: `${BLAMELESS_TENANT_DOMAIN}/services/SLOService/`,
     m2m: `https://blamelesshq.auth0.com/oauth/token`,
 }
 

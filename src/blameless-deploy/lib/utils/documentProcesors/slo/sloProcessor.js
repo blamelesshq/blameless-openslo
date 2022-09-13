@@ -3,7 +3,7 @@ const logger = require('../../../../../lib/utils/logger')
 
 const getOrgId = require('../../../../handlers/shared/getOrgId')
 const getUserId = require('../../../../handlers/shared/getUserId')
-const getAllSLIs = require('../../../../handlers/slis/getAllSLIsHandler')
+const getSliByNameHandler = require('../../../../handlers/slis/getSliByNameHandler')
 const getUserJourneysHandler = require('../../../../handlers/userJourney/getUserJourneysHandler')
 const createSLOHandler = require('../../../../handlers/slo/createSLOHandler')
 const sloStatusesHandler = require('../../../../handlers/slo/getSLOStatusesHandler')
@@ -46,23 +46,15 @@ const getSloObjectives = (document) => {
 }
 
 const getSliName = async (document) => {
-    const slis = await getAllSLIs()
-    const matchingSliId =
-        slis &&
-        slis.find(
-            (item) =>
-                item?.name &&
-                item?.name?.toLowerCase() ===
-                    document?.spec?.sliName?.toLowerCase()
-        )?.id
+    const sli = await getSliByNameHandler(document?.spec?.sliName)
 
-    if (!matchingSliId) {
+    if (!sli?.id) {
         throw new Error(
             `SLI with name ${document?.spec?.sliName} does not exist. Please make sure that SLI is already created before try to create SLO.`
         )
     }
 
-    return matchingSliId
+    return sli.id
 }
 
 const getJourneyId = async (document) => {

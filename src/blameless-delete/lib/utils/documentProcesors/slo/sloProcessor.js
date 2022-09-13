@@ -76,9 +76,7 @@ const sloProcessor = async (document, inputResult) => {
     try {
         await serviceSteps.run()
         logger.infoSuccess(
-            `SUCCESSFULLY DELETED SLO: ${JSON.stringify(
-                response
-            )}`
+            `SUCCESSFULLY DELETED SLO: ${response?.name}`
         )
     } catch (err) {
         logger.infoError(
